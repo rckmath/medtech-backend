@@ -9,6 +9,7 @@ const sequelize = new Sequelize(
   Constants.database.user,
   Constants.database.password, {
     host: Constants.database.host,
+    port: Constants.database.port,
     dialect: 'postgres',
     pool: {
       max: 50,

@@ -10,6 +10,6 @@ RUN yarn
 VOLUME ${HOME}/node_modules
 
 COPY . .
-EXPOSE 3040
+EXPOSE 3050
 
 CMD ["yarn", "start"]
