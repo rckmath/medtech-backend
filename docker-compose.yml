@@ -5,7 +5,17 @@ services:
     build: .
     command: yarn start
     ports:
-      - "3050:3050"
+      - "3020:3020"
+    depends_on:
+      - postgres
     volumes:
       - .:/home/app/medtech
       - /home/app/medtech/node_modules
+  postgres:
+    image: postgres:alpine
+    ports:
+      - "3210:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: medtech_dev
+      POSTGRES_PASSWORD: uaz0ZWrsCeUG3271GsRB
