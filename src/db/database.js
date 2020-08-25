@@ -3,7 +3,6 @@ import path from 'path';
 import Sequelize from 'sequelize';
 import Constants from '../utils/constants';
 
-
 const sequelize = new Sequelize(
   Constants.database.name,
   Constants.database.user,
