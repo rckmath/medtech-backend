@@ -6,7 +6,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import httpStatus from 'http-status';
     
-import routes from './routes/controllers/index';
+import routes from './routes/index';
 
 
 const app = express();

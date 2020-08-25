@@ -1,5 +1,5 @@
 import express from 'express';
-import Constants from '../../utilities/constants';
+import Constants from '../utilities/constants';
 
 const router = express.Router();
 const startedAt = Date.now();

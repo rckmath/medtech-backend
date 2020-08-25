@@ -1,3 +1,7 @@
+require('@babel/register');
+require('core-js/stable');
+require('regenerator-runtime/runtime');
+
 const Constants = require('../utilities/constants').default;
 
 module.exports = {
