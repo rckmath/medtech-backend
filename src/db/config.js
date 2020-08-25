@@ -2,7 +2,7 @@ require('@babel/register');
 require('core-js/stable');
 require('regenerator-runtime/runtime');
 
-const Constants = require('../utilities/constants').default;
+const Constants = require('../utils/constants').default;
 
 module.exports = {
   username: Constants.database.user,

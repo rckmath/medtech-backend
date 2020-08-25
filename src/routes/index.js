@@ -1,12 +1,9 @@
 import express from 'express';
-import Constants from '../utilities/constants';
+import Constants from '../utils/constants';
 
 const router = express.Router();
 const startedAt = Date.now();
 
-router.get('/status',
-  async (req, res) => res.json({
-    hello_world: "Alô!", 
-  }));
+router.use('/user', require('./controllers/user-controller').default);
 
 export default router;

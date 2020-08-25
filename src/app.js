@@ -1,7 +1,7 @@
 import './setup';
 import './db/database';
 import server from './server';
-import Constants from './utilities/constants';
+import Constants from './utils/constants';
 
 server.listen(Constants.port, Constants.host);
 

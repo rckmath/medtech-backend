@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
 import moment from 'moment-timezone';
-// import PersistenceError from '../../utilities/errors/persistence';
+// import PersistenceError from '../../utils/errors/persistence';
  
 
 export default class ModelRepository {

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import Sequelize from 'sequelize';
-import Constants from '../utilities/constants';
+import Constants from '../utils/constants';
 
 
 const sequelize = new Sequelize(
@@ -12,7 +12,7 @@ const sequelize = new Sequelize(
     port: Constants.database.port,
     dialect: 'postgres',
     pool: {
-      max: 50,
+      max: 10,
       min: 0,
       acquire: 10000,
       idle: 20000,
@@ -20,6 +20,7 @@ const sequelize = new Sequelize(
     timezone: Constants.timezone,
   },
 );
+
 const db = {
   sequelize,
   Sequelize,
@@ -31,7 +32,8 @@ fs.readdirSync(dir).forEach((file) => {
   const modelDir = path.join(dir, file);
 
   try {
-    const model = sequelize.import(modelDir);
+    var model = require(modelDir).default(sequelize, Sequelize.DataTypes);
+
 
     db.models[model.name] = model;
   } catch (err) {
