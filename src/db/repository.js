@@ -8,6 +8,7 @@ export default class ModelRepository {
     let response = null;
 
     try {
+      console.log(data);
       response = ModelEntity.build(data);
 
       response = await response.save({

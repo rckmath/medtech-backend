@@ -2,12 +2,13 @@ import express from 'express';
 import httpStatus from 'http-status';
 import { checkSchema, param, validationResult } from 'express-validator';
 import UserType from '../../enums/user-type';
+import UserService from '../../services/user';
 
 const routes = express.Router();
 
 routes.get('/',
   async (req, res) => res.json({
-    hello_world: "Alô!", 
+    hello_world: "Teste!", 
   }));
 
 routes.post('/',
@@ -15,6 +16,7 @@ routes.post('/',
     let response;
 
     try {
+      response = await UserService.create(req.body, req.user);
     } catch (err) {
       throw err;
     }

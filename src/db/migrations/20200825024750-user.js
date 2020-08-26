@@ -17,6 +17,7 @@ module.exports = {
       dt_recovery_token_expires_at: { type: Sequelize.DATE },
 
       str_ip: { type: Sequelize.STRING },
+
       str_created_by: { type: Sequelize.STRING },
       str_updated_by: { type: Sequelize.STRING },
       dt_created_at: { type: Sequelize.DATE },

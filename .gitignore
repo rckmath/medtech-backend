@@ -109,3 +109,4 @@ Dockerfile
 
 # Others
 .config/
+.ash_history
