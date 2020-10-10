@@ -1,11 +1,12 @@
 import * as dotenv from 'dotenv';
 
 dotenv.config();
-  
+
 export default class Constants {
   static env = process.env.NODE_ENV;
 
   static port = process.env.PORT;
+
   static host = `${process.env.HOST}`;
 
   static database = {

@@ -5,4 +5,5 @@ import Constants from './utils/constants';
 
 server.listen(Constants.port, Constants.host);
 
-console.log(`Server is running on port: ${Constants.port}`);
+// eslint-disable-next-line no-console
+console.log(`Running on port: ${Constants.port}`);

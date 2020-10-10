@@ -10,15 +10,15 @@ export default (sequelize, DataTypes) => {
     password: { type: DataTypes.STRING, field: 'str_password' },
     cellphone: { type: DataTypes.STRING, field: 'str_cellphone' },
     birthday: { type: DataTypes.DATE, field: 'dt_birthday' },
-    
+
     genderType: { type: DataTypes.INTEGER, field: 'int_gender_type' },
     userType: { type: DataTypes.INTEGER, field: 'int_user_type' },
-  
+
     recoveryToken: { type: DataTypes.STRING, field: 'str_recovery_token' },
     recoveryTokenExpiresAt: { type: DataTypes.DATE, field: 'dt_recovery_token_expires_at' },
-  
+
     ip: { type: DataTypes.STRING, field: 'str_ip' },
-  
+
     createdBy: { type: DataTypes.STRING, field: 'str_created_by' },
     updatedBy: { type: DataTypes.STRING, field: 'str_updated_by' },
     createdAt: { type: DataTypes.DATE, field: 'dt_created_at' },
@@ -28,14 +28,14 @@ export default (sequelize, DataTypes) => {
     sequelize,
     tableName: 'tb_user',
     modelName: 'User',
-  
+
     freezeTableName: true,
     timestamps: true,
-    
+
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     deletedAt: 'deletedAt',
   });
 
   return User;
-}
+};

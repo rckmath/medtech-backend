@@ -5,9 +5,7 @@ import methodOverride from 'method-override';
 import cors from 'cors';
 import helmet from 'helmet';
 import httpStatus from 'http-status';
-    
 import routes from './routes/index';
-
 
 const app = express();
 

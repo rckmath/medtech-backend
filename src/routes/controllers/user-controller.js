@@ -6,21 +6,10 @@ import UserService from '../../services/user';
 
 const routes = express.Router();
 
-routes.get('/',
-  async (req, res) => res.json({
-    hello_world: "Teste!", 
-  }));
-
 routes.post('/',
   async (req, res) => {
-    let response;
+    const response = await UserService.create(req.body, req.user);
 
-    try {
-      response = await UserService.create(req.body, req.user);
-    } catch (err) {
-      throw err;
-    }
-    
     return res.status(httpStatus.OK).json(response);
   });
 

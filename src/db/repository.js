@@ -1,7 +1,6 @@
 import { Op } from 'sequelize';
 import moment from 'moment-timezone';
 // import PersistenceError from '../../utils/errors/persistence';
- 
 
 export default class ModelRepository {
   static async create(ModelEntity, data, options) {
@@ -27,7 +26,7 @@ export default class ModelRepository {
     let response = null;
 
     try {
-      
+
       response = await ModelEntity.findOne(options);
     } catch (err) {
       throw err;

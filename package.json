@@ -6,6 +6,7 @@
   "author": "ericklopes02@gmail.com",
   "license": "CC0-1.0",
   "scripts": {
+    "lint": "yarn eslint -c .eslintrc --ext .js ./src",
     "start": "nodemon -L --exec babel-node ./index.js",
     "migrate": "yarn sequelize-cli db:migrate",
     "migration-undo": "yarn sequelize-cli db:migrate:undo --name",
@@ -13,6 +14,7 @@
     "seed-db": "yarn sequelize-cli db:seed:all"
   },
   "dependencies": {
+    "@babel/register": "^7.10.5",
     "@babel/runtime": "^7.11.2",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
@@ -27,6 +29,7 @@
     "moment-timezone": "^0.5.31",
     "pg": "^8.3.2",
     "pg-hstore": "^2.3.3",
+    "regenerator-runtime": "^0.13.7",
     "sequelize": "^6.3.4"
   },
   "devDependencies": {
@@ -36,8 +39,14 @@
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/plugin-transform-runtime": "^7.11.0",
     "@babel/preset-env": "^7.11.0",
-    "@babel/register": "^7.10.5",
-    "eslint": "^7.7.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.11.0",
+    "eslint-config-airbnb": "18.2.0",
+    "eslint-plugin-babel": "^5.3.1",
+    "eslint-plugin-import": "2.21.2",
+    "eslint-plugin-jsx-a11y": "6.3.0",
+    "eslint-plugin-react": "7.20.0",
+    "eslint-plugin-react-hooks": "4.0.0",
     "husky": "^4.2.5",
     "nodemon": "^2.0.4",
     "sequelize-cli": "^6.2.0"

@@ -6,7 +6,8 @@ import Constants from '../utils/constants';
 const sequelize = new Sequelize(
   Constants.database.name,
   Constants.database.user,
-  Constants.database.password, {
+  Constants.database.password,
+  {
     host: Constants.database.host,
     port: Constants.database.port,
     dialect: 'postgres',
@@ -31,8 +32,7 @@ fs.readdirSync(dir).forEach((file) => {
   const modelDir = path.join(dir, file);
 
   try {
-    var model = require(modelDir).default(sequelize, Sequelize.DataTypes);
-
+    const model = require(modelDir).default(sequelize, Sequelize.DataTypes);
 
     db.models[model.name] = model;
   } catch (err) {
@@ -58,10 +58,10 @@ Object.keys(db.models).forEach((modelName) => {
   try {
     await db.sequelize.authenticate();
     // eslint-disable-next-line no-console
-    console.log('Database connection has been established successfully.');
+    console.log('Successfully connected to database.');
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.log(`Unable to connect to the database: ${err}`);
+    console.log(`Failed to connect to the database: ${err}`);
   }
 })();
 

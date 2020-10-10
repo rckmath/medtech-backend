@@ -4,11 +4,23 @@ import db from '../db/database';
 
 const UserModel = db.models.User;
 
+const PrivateMethods = {
+  checkIfUserExists: (exists, user) => {
+    if (!exists) { return; }
+
+    const emailExists = user.email === exists.email;
+    const cpfExists = user.cpf === exists.cpf;
+
+    if (emailExists || cpfExists) return 'Já cadastrado.';
+  },
+};
+
 const Toolbox = {
   getExistentUser: (user) => {
     const or = [];
 
     if (user.cpf) { or.push({ cpf: user.cpf }); }
+
     if (user.email) { or.push({ email: user.email }); }
 
     const exists = ModelRepository.selectOne(UserModel, {
@@ -19,17 +31,6 @@ const Toolbox = {
 
     return exists;
   },
-}
-
-const PrivateMethods = {
-  checkIfUserExists: (exists, user) => {
-    if (!exists) { return; }
-
-    const emailExists = user.email === exists.email;
-    const cpfExists = user.cpf === exists.cpf;
-
-    if (emailExists || cpfExists) return 'Já cadastrado.'
-  },
 };
 
 export default class UserService {
@@ -38,9 +39,10 @@ export default class UserService {
     await Toolbox.getExistentUser(user);
 
     let creator;
-    if (actor) { creator = actor.id }
 
-    return await ModelRepository.create(UserModel, {
+    if (actor) { creator = actor.id; }
+
+    return ModelRepository.create(UserModel, {
       name: user.name,
       cpf: user.cpf,
       email: user.email,
