@@ -5,10 +5,12 @@ import methodOverride from 'method-override';
 import cors from 'cors';
 import helmet from 'helmet';
 import httpStatus from 'http-status';
-import routes from './routes/index';
+import morgan from 'morgan';
+import routes from './routes';
 
 const app = express();
 
+app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true,
@@ -16,19 +18,26 @@ app.use(bodyParser.urlencoded({
 
 app.use(compress());
 app.use(methodOverride());
-
-// secure apps by setting various HTTP headers
 app.use(helmet());
-
-// enable CORS - Cross Origin Resource Sharing
 app.use(cors());
 
-// mount all routes on /api path
 app.use('/api', routes);
 
-// catch 404 and forward to error handler
-app.use((req, res) => {
-  res.status(httpStatus.NOT_FOUND).json();
+app.use((req, res, next) => {
+  const err = new Error('Not found! Please check the URL.');
+  err.status = httpStatus.NOT_FOUND;
+  next();
+});
+
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR);
+  res.json({
+    error: {
+      message: err.message,
+      status: err.status,
+    },
+  });
 });
 
 export default app;

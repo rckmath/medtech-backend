@@ -6,10 +6,8 @@ module.exports = {
 
     const exist = await queryInterface.rawSelect('tb_user', {
       where: {
-        id: 1,
-        str_name: 'System Admin',
-        str_password: '123123',
         str_email: 'system-admin@medtech.com.br',
+        str_password: '123123',
       },
     }, ['id']);
 

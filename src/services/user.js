@@ -38,10 +38,6 @@ export default class UserService {
   static async create(user, actor) {
     await Toolbox.getExistentUser(user);
 
-    let creator;
-
-    if (actor) { creator = actor.id; }
-
     return ModelRepository.create(UserModel, {
       name: user.name,
       cpf: user.cpf,
@@ -55,7 +51,7 @@ export default class UserService {
 
       ip: user.ip,
 
-      createdBy: creator,
+      createdBy: actor && actor.id,
     });
   }
 }
