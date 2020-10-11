@@ -6,12 +6,14 @@ const UserModel = db.models.User;
 
 const PrivateMethods = {
   checkIfUserExists: (exists, user) => {
-    if (!exists) { return; }
+    if (!exists) { return false; }
 
     const emailExists = user.email === exists.email;
     const cpfExists = user.cpf === exists.cpf;
 
-    if (emailExists || cpfExists) return 'Já cadastrado.';
+    if (emailExists || cpfExists) return 'Já registrado!';
+
+    return false;
   },
 };
 
@@ -53,5 +55,31 @@ export default class UserService {
 
       createdBy: actor && actor.id,
     });
+  }
+
+  static async getById(id) {
+    const user = await ModelRepository.selectOne(UserModel, { where: { id, deletedAt: null } });
+
+    if (!user) { return 'Not found!'; }
+
+    return user;
+  }
+
+  static async updateById(id, user, actor) {
+    await ModelRepository.updateById(UserModel, id, {
+      name: user.name,
+      cellphone: user.cellphone,
+
+      ip: user.ip,
+
+      updatedBy: actor && actor.id,
+    });
+  }
+
+  static async deleteById(id, actor) {
+    return Promise.all([
+      UserService.getById(id),
+      ModelRepository.deleteById(UserModel, id, actor.id),
+    ]);
   }
 }

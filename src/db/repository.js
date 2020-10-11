@@ -1,13 +1,17 @@
 import { Op } from 'sequelize';
 import moment from 'moment-timezone';
-// import PersistenceError from '../../utils/errors/persistence';
+
+const exclude = [
+  'password',
+  'recoveryToken',
+  'recoveryTokenExpiresAt',
+];
 
 export default class ModelRepository {
   static async create(ModelEntity, data, options) {
     let response = null;
 
     try {
-      console.log(data);
       response = ModelEntity.build(data);
 
       response = await response.save({
@@ -15,8 +19,7 @@ export default class ModelRepository {
         returning: true,
       });
     } catch (err) {
-      throw err;
-      // throw new PersistenceError(err);
+      throw new Error(err.message);
     }
 
     return response;
@@ -26,11 +29,16 @@ export default class ModelRepository {
     let response = null;
 
     try {
+      options = {
+        ...options,
+        attributes: (options && options.attributes) || {
+          exclude,
+        },
+      };
 
       response = await ModelEntity.findOne(options);
     } catch (err) {
-      throw err;
-      // throw new PersistenceError(err);
+      throw new Error(err.message);
     }
 
     return response;
@@ -42,8 +50,7 @@ export default class ModelRepository {
     try {
       response = await ModelEntity.findAll({ where: { id: { [Op.in]: idList } } });
     } catch (err) {
-      throw err;
-      // throw new PersistenceError(err);
+      throw new Error(err.message);
     }
 
     return response;
@@ -55,8 +62,7 @@ export default class ModelRepository {
     try {
       response = await ModelEntity.findAll(options);
     } catch (err) {
-      throw err;
-      // throw new PersistenceError(err);
+      throw new Error(err.message);
     }
 
     return response;
@@ -72,8 +78,7 @@ export default class ModelRepository {
       };
       response = await ModelEntity.findAndCountAll(options);
     } catch (err) {
-      throw err;
-      // throw new PersistenceError(err);
+      throw new Error(err.message);
     }
 
     return response;
@@ -91,8 +96,7 @@ export default class ModelRepository {
 
       [, [response]] = response;
     } catch (err) {
-      throw err;
-      // throw new PersistenceError(err);
+      throw new Error(err.message);
     }
 
     return response;
@@ -112,8 +116,7 @@ export default class ModelRepository {
       });
       [, [response]] = response;
     } catch (err) {
-      throw err;
-      // throw new PersistenceError(err);
+      throw new Error(err.message);
     }
 
     return response;

@@ -1,4 +1,4 @@
 #!/bin/sh
-npm run migrate
-npm run seed-db
-npm run start
+yarn migrate
+yarn seed-db
+yarn start

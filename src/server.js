@@ -11,11 +11,8 @@ import routes from './routes';
 const app = express();
 
 app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: true,
-}));
-
 app.use(compress());
 app.use(methodOverride());
 app.use(helmet());
@@ -32,12 +29,15 @@ app.use((req, res, next) => {
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR);
+
   res.json({
     error: {
       message: err.message,
       status: err.status,
     },
   });
+
+  next(err);
 });
 
 export default app;
