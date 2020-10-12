@@ -39,6 +39,7 @@ routes.get('/:id',
 
 routes.put('/:id',
   param('id').isNumeric().withMessage(ValidationCodeError.INVALID_ID),
+  schemaValidation(schemaPackage.user.update),
   async (req, res, next) => {
     let response;
 
