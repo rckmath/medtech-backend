@@ -1,7 +1,10 @@
 import { Op } from 'sequelize';
-import moment from 'moment-timezone';
-// import PersistenceError from '../../utilities/errors/persistence';
- 
+import dayjs from 'dayjs';
+import httpStatus from 'http-status';
+import ExtendableError from '../utils/error/extendable';
+import ErrorType from '../enums/error-type';
+
+const exclude = ['password', 'recoveryToken', 'recoveryTokenExpiresAt'];
 
 export default class ModelRepository {
   static async create(ModelEntity, data, options) {
@@ -14,9 +17,10 @@ export default class ModelRepository {
         transaction: options ? options.transaction : null,
         returning: true,
       });
+
+      exclude.forEach((o) => delete response.dataValues[o]);
     } catch (err) {
-      throw err;
-      // throw new PersistenceError(err);
+      throw new ExtendableError(ErrorType.PERSISTENCE, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return response;
@@ -26,11 +30,16 @@ export default class ModelRepository {
     let response = null;
 
     try {
-      
+      options = {
+        ...options,
+        attributes: (options && options.attributes) || {
+          exclude,
+        },
+      };
+
       response = await ModelEntity.findOne(options);
     } catch (err) {
-      throw err;
-      // throw new PersistenceError(err);
+      throw new ExtendableError(ErrorType.PERSISTENCE, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return response;
@@ -40,10 +49,11 @@ export default class ModelRepository {
     let response = null;
 
     try {
-      response = await ModelEntity.findAll({ where: { id: { [Op.in]: idList } } });
+      response = await ModelEntity.findAll({
+        where: { id: { [Op.in]: idList } },
+      });
     } catch (err) {
-      throw err;
-      // throw new PersistenceError(err);
+      throw new ExtendableError(ErrorType.PERSISTENCE, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return response;
@@ -55,8 +65,7 @@ export default class ModelRepository {
     try {
       response = await ModelEntity.findAll(options);
     } catch (err) {
-      throw err;
-      // throw new PersistenceError(err);
+      throw new ExtendableError(ErrorType.PERSISTENCE, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return response;
@@ -72,8 +81,7 @@ export default class ModelRepository {
       };
       response = await ModelEntity.findAndCountAll(options);
     } catch (err) {
-      throw err;
-      // throw new PersistenceError(err);
+      throw new ExtendableError(ErrorType.PERSISTENCE, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return response;
@@ -90,9 +98,10 @@ export default class ModelRepository {
       });
 
       [, [response]] = response;
+
+      exclude.forEach((o) => delete response.dataValues[o]);
     } catch (err) {
-      throw err;
-      // throw new PersistenceError(err);
+      throw new ExtendableError(ErrorType.PERSISTENCE, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return response;
@@ -102,18 +111,20 @@ export default class ModelRepository {
     let response = null;
 
     try {
-      response = await ModelEntity.update({
-        deletedAt: moment().format(),
-        updatedBy,
-      }, {
-        where: { id },
-        transaction: options && options.transaction,
-        returning: true,
-      });
+      response = await ModelEntity.update(
+        {
+          deletedAt: dayjs().toDate(),
+          updatedBy,
+        },
+        {
+          where: { id },
+          transaction: options && options.transaction,
+          returning: true,
+        },
+      );
       [, [response]] = response;
     } catch (err) {
-      throw err;
-      // throw new PersistenceError(err);
+      throw new ExtendableError(ErrorType.PERSISTENCE, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return response;

@@ -5,32 +5,56 @@ import methodOverride from 'method-override';
 import cors from 'cors';
 import helmet from 'helmet';
 import httpStatus from 'http-status';
-    
-import routes from './routes/index';
-
+import morgan from 'morgan';
+import routes from './routes';
+import ErrorType from './enums/error-type';
 
 const app = express();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: true,
-}));
-
+app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '20mb', type: 'application/json' }));
 app.use(compress());
 app.use(methodOverride());
-
-// secure apps by setting various HTTP headers
 app.use(helmet());
-
-// enable CORS - Cross Origin Resource Sharing
 app.use(cors());
 
-// mount all routes on /api path
 app.use('/api', routes);
 
-// catch 404 and forward to error handler
-app.use((req, res) => {
-  res.status(httpStatus.NOT_FOUND).json();
+app.use((_req, _res, next) => {
+  const err = new Error('not_found');
+  err.status = httpStatus.NOT_FOUND;
+  next(err);
+});
+
+app.use((err, _req, res, next) => {
+  if (err.errors && err.errors.length > 0) {
+    const error = err.errors.pop();
+
+    res.status(httpStatus.BAD_REQUEST).json({
+      error: {
+        type: ErrorType.CLIENT_ERROR,
+        message: error.msg,
+        options: error.param,
+        status: httpStatus.BAD_REQUEST,
+      },
+    });
+  } else if (err.status === httpStatus.NOT_FOUND) {
+    res.status(err.status).json({
+      error: { type: err.type, message: err.message, status: err.status },
+    });
+  } else {
+    res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR).json({
+      error: {
+        type: err.type,
+        message: err.message,
+        status: err.status,
+        stack: err.stack,
+      },
+    });
+
+    next(err);
+  }
 });
 
 export default app;
