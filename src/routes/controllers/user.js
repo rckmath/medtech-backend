@@ -15,6 +15,22 @@ routes.post('/',
     let response;
 
     try {
+      response = await UserService.createPatient(req.body);
+    } catch (err) {
+      return next(err);
+    }
+
+    return res.status(httpStatus.CREATED).json(response);
+  });
+
+routes.post('/admin',
+  authenticate,
+  authorize([UserType.ADMIN]),
+  schemaValidation(schemaPackage.user.create),
+  async (req, res, next) => {
+    let response;
+
+    try {
       response = await UserService.create(req.body);
     } catch (err) {
       return next(err);

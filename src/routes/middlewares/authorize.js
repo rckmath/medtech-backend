@@ -10,7 +10,7 @@ export default function authorize(permissionList) {
       if (!hasAccess) {
         throw new ExtendableError(
           ErrorType.FORBIDDEN,
-          'You do not have permission to access this page!',
+          'Permission denied.',
           httpStatus.FORBIDDEN,
         );
       }

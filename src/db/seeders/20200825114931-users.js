@@ -11,7 +11,7 @@ module.exports = {
         str_email: 'system-admin@medtech.com.br',
         str_password: sha256(process.env.SYSTEM_PASSWORD),
       },
-    }, ['id']);
+    }, ['str_email']);
 
     if (exist) { return; }
 

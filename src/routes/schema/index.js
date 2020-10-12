@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import GenderType from '../../enums/gender-type';
+import UserType from '../../enums/user-type';
 import {
   emailValidation, cpfValidation, phoneValidation,
   stringValidation, ipValidation, passwordValidation,
@@ -36,6 +37,14 @@ schemaPackage.user = {
         options: (gender) => Object.values(GenderType).some((o) => o === gender),
       },
       errorMessage: 'invalid_gender',
+    },
+    type: {
+      in: 'body',
+      custom: {
+        options: (type) => Object.values(UserType).some((o) => o === type),
+      },
+      optional: true,
+      errorMessage: 'invalid_user_type',
     },
   },
   update: {
