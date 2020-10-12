@@ -16,15 +16,4 @@ export default class Constants {
     user: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD,
   };
-
-  static timezone = process.env.TIMEZONE;
-
-  static language = process.env.LANGUAGE;
-
-  static auth = {
-    tokenExpiryAmount: process.env.TOKEN_EXPIRY_AMOUNT,
-    tokenExpiryUnit: process.env.TOKEN_EXPIRY_UNIT,
-    refreshTokenExpiryAmount: process.env.REFRESH_TOKEN_EXPIRY_AMOUNT,
-    refreshTokenExpiryUnit: process.env.REFRESH_TOKEN_EXPIRY_UNIT,
-  }
 }

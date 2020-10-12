@@ -1,5 +1,6 @@
-import moment from 'moment-timezone';
-import Constants from './utils/constants';
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 
-moment.tz.setDefault(Constants.timezone);
-moment.locale(Constants.language);
+dayjs.extend(timezone);
+dayjs.extend(utc);

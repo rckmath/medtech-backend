@@ -21,7 +21,6 @@ const sequelize = new Sequelize(
       acquire: 10000,
       idle: 20000,
     },
-    timezone: Constants.timezone,
   },
 );
 

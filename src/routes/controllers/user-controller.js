@@ -1,6 +1,6 @@
 import express from 'express';
 import httpStatus from 'http-status';
-import { param } from 'express-validator';
+import { param, validationResult } from 'express-validator';
 import schemaPackage from '../schemas/schema-package';
 import UserService from '../../services/user';
 import schemaValidation from '../middlewares/schema-validation';
@@ -28,6 +28,7 @@ routes.get('/:id',
     let response;
 
     try {
+      validationResult(req).throw();
       response = await UserService.getById(req.params.id);
     } catch (err) {
       return next(err);
@@ -56,6 +57,7 @@ routes.delete('/:id',
     let response;
 
     try {
+      validationResult(req).throw();
       response = await UserService.deleteById(req.params.id);
     } catch (err) {
       return next(err);

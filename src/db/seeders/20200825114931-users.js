@@ -1,5 +1,5 @@
 require('dotenv').config();
-const moment = require('moment-timezone');
+const dayjs = require('dayjs');
 const UserType = require('../../enums/user-type').default;
 const { sha256 } = require('../../utils/tools');
 
@@ -14,7 +14,7 @@ module.exports = {
 
     if (exist) { return; }
 
-    const now = moment().toDate();
+    const now = dayjs().toDate();
     const baseEntity = {
       dt_created_at: now,
       dt_updated_at: now,

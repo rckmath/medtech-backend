@@ -1,11 +1,10 @@
 import { Op } from 'sequelize';
-import moment from 'moment-timezone';
+import dayjs from 'dayjs';
+import httpStatus from 'http-status';
+import ExtendableError from '../utils/error/extendable';
+import ErrorType from '../enums/error-type';
 
-const exclude = [
-  'password',
-  'recoveryToken',
-  'recoveryTokenExpiresAt',
-];
+const exclude = ['password', 'recoveryToken', 'recoveryTokenExpiresAt'];
 
 export default class ModelRepository {
   static async create(ModelEntity, data, options) {
@@ -19,7 +18,11 @@ export default class ModelRepository {
         returning: true,
       });
     } catch (err) {
-      throw new Error(err.message);
+      throw new ExtendableError(
+        ErrorType.PERSISTENCE,
+        err.message,
+        httpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
     return response;
@@ -38,7 +41,11 @@ export default class ModelRepository {
 
       response = await ModelEntity.findOne(options);
     } catch (err) {
-      throw new Error(err);
+      throw new ExtendableError(
+        ErrorType.PERSISTENCE,
+        err.message,
+        httpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
     return response;
@@ -48,9 +55,15 @@ export default class ModelRepository {
     let response = null;
 
     try {
-      response = await ModelEntity.findAll({ where: { id: { [Op.in]: idList } } });
+      response = await ModelEntity.findAll({
+        where: { id: { [Op.in]: idList } },
+      });
     } catch (err) {
-      throw new Error(err.message);
+      throw new ExtendableError(
+        ErrorType.PERSISTENCE,
+        err.message,
+        httpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
     return response;
@@ -62,7 +75,11 @@ export default class ModelRepository {
     try {
       response = await ModelEntity.findAll(options);
     } catch (err) {
-      throw new Error(err.message);
+      throw new ExtendableError(
+        ErrorType.PERSISTENCE,
+        err.message,
+        httpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
     return response;
@@ -78,7 +95,11 @@ export default class ModelRepository {
       };
       response = await ModelEntity.findAndCountAll(options);
     } catch (err) {
-      throw new Error(err.message);
+      throw new ExtendableError(
+        ErrorType.PERSISTENCE,
+        err.message,
+        httpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
     return response;
@@ -96,7 +117,11 @@ export default class ModelRepository {
 
       [, [response]] = response;
     } catch (err) {
-      throw new Error(err.message);
+      throw new ExtendableError(
+        ErrorType.PERSISTENCE,
+        err.message,
+        httpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
     return response;
@@ -106,17 +131,24 @@ export default class ModelRepository {
     let response = null;
 
     try {
-      response = await ModelEntity.update({
-        deletedAt: moment().format(),
-        updatedBy,
-      }, {
-        where: { id },
-        transaction: options && options.transaction,
-        returning: true,
-      });
+      response = await ModelEntity.update(
+        {
+          deletedAt: dayjs().toDate(),
+          updatedBy,
+        },
+        {
+          where: { id },
+          transaction: options && options.transaction,
+          returning: true,
+        },
+      );
       [, [response]] = response;
     } catch (err) {
-      throw new Error(err.message);
+      throw new ExtendableError(
+        ErrorType.PERSISTENCE,
+        err.message,
+        httpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
     return response;
