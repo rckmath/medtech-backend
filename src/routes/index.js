@@ -12,5 +12,6 @@ router.get('/status',
   }));
 
 router.use('/user', require('./controllers/user').default);
+router.use('/auth', require('./controllers/auth').default);
 
 export default router;

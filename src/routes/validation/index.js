@@ -33,6 +33,16 @@ const emailValidation = {
   errorMessage: 'invalid_email',
 };
 
+const passwordValidation = {
+  in: 'body',
+  isString: true,
+  notEmpty: true,
+  isLength: {
+    options: { min: 8 },
+  },
+  errorMessage: 'invalid_password',
+};
+
 const ipValidation = {
   in: 'body',
   isIP: true,
@@ -44,6 +54,7 @@ export {
   cpfValidation,
   phoneValidation,
   emailValidation,
+  passwordValidation,
   stringValidation,
   ipValidation,
 };
