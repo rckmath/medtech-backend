@@ -1,7 +1,6 @@
 const ValidationCodeError = {
   INVALID_ID: 'invalid_id',
   INVALID_PARAMS: 'invalid_params',
-  BAD_CREDENTIALS: 'bad_credentials',
 };
 const UserCodeError = {
   USER_NOT_FOUND: 'user_not_found',
@@ -9,7 +8,13 @@ const UserCodeError = {
   EMAIL_ALREADY_REGISTERED: 'email_already_registered',
 };
 
+const AuthCodeError = {
+  BAD_CREDENTIALS: 'bad_credentials',
+  ACCESS_NOT_ALLOWED: 'access_not_allowed',
+};
+
 export {
   UserCodeError,
   ValidationCodeError,
+  AuthCodeError,
 };

@@ -1,7 +1,9 @@
 import dayjs from 'dayjs';
 import GenderType from '../../enums/gender-type';
+import UserType from '../../enums/user-type';
 import {
-  emailValidation, cpfValidation, phoneValidation, stringValidation, ipValidation,
+  emailValidation, cpfValidation, phoneValidation,
+  stringValidation, ipValidation, passwordValidation,
 } from '../validation';
 
 const schemaPackage = {};
@@ -11,6 +13,7 @@ schemaPackage.user = {
     name: { ...stringValidation, errorMessage: 'invalid_name' },
     cpf: cpfValidation,
     email: emailValidation,
+    password: passwordValidation,
     phone: { ...phoneValidation, optional: false },
     birthday: {
       in: 'body',
@@ -35,6 +38,14 @@ schemaPackage.user = {
       },
       errorMessage: 'invalid_gender',
     },
+    type: {
+      in: 'body',
+      custom: {
+        options: (type) => Object.values(UserType).some((o) => o === type),
+      },
+      optional: true,
+      errorMessage: 'invalid_user_type',
+    },
   },
   update: {
     phone: phoneValidation,
@@ -48,6 +59,13 @@ schemaPackage.user = {
       optional: true,
       errorMessage: 'invalid_photo_file',
     },
+  },
+};
+
+schemaPackage.auth = {
+  login: {
+    email: emailValidation,
+    password: passwordValidation,
   },
 };
 

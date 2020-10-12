@@ -6,6 +6,7 @@ import ExtendableError from '../utils/error/extendable';
 import { UserCodeError } from '../utils/error/business-errors';
 import ErrorType from '../enums/error-type';
 import { sha256 } from '../utils/tools';
+import UserType from '../enums/user-type';
 
 const UserModel = db.models.User;
 
@@ -51,6 +52,11 @@ const Toolbox = {
 };
 
 export default class UserService {
+  static async createPatient(user) {
+    user.type = UserType.PATIENT;
+
+    return UserService.create(user);
+  }
 
   static async create(user, actor) {
     await Toolbox.getExistentUser(user);

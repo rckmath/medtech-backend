@@ -7,7 +7,7 @@ export default class Constants {
 
   static port = process.env.PORT;
 
-  static host = `${process.env.HOST}`;
+  static host = process.env.HOST;
 
   static database = {
     port: process.env.DATABASE_PORT,
@@ -16,4 +16,10 @@ export default class Constants {
     user: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD,
   };
+
+  static auth = {
+    jwtSecret: process.env.AUTH_JWT_SECRET,
+    accessTokenLifetime: process.env.AUTH_ACCESS_TOKEN_LIFETIME,
+    refreshTokenLifetime: process.env.AUTH_REFRESH_TOKEN_LIFETIME,
+  }
 }
