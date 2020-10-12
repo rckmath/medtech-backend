@@ -73,7 +73,7 @@ routes.get('/:id',
 
 routes.put('/:id',
   authenticate,
-  authorize([UserType.ADMIN]),
+  authorize([UserType.ADMIN, UserType.MEDIC, UserType.PATIENT]),
   param('id').isNumeric().withMessage(ValidationCodeError.INVALID_ID),
   schemaValidation(schemaPackage.user.update),
   async (req, res, next) => {
