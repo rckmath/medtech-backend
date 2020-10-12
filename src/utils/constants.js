@@ -17,5 +17,9 @@ export default class Constants {
     password: process.env.DATABASE_PASSWORD,
   };
 
-  static jwtSecret = process.env.JWT_SECRET;
+  static auth = {
+    jwtSecret: process.env.AUTH_JWT_SECRET,
+    accessTokenLifetime: process.env.AUTH_ACCESS_TOKEN_LIFETIME,
+    refreshTokenLifetime: process.env.AUTH_REFRESH_TOKEN_LIFETIME,
+  }
 }

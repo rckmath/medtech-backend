@@ -1,10 +1,9 @@
 import express from 'express';
 import httpStatus from 'http-status';
-import { param, validationResult } from 'express-validator';
 import schemaPackage from '../schema';
 import AuthService from '../../services/auth';
-import schemaValidation from '../middlewares/schema-validation';
-import { ValidationCodeError } from '../../utils/error/business-errors';
+import { schemaValidation, authenticate, authorize } from '../middlewares';
+import UserType from '../../enums/user-type';
 
 const routes = express.Router();
 
@@ -19,7 +18,22 @@ routes.post('/',
       return next(err);
     }
 
-    return res.status(httpStatus.A).json(response);
+    return res.status(httpStatus.OK).json(response);
+  });
+
+routes.post('/logout',
+  authenticate,
+  authorize([UserType.ADMIN, UserType.MEDIC, UserType.PATIENT]),
+  async (_req, res, next) => {
+    let response;
+
+    try {
+      response = await AuthService.logout();
+    } catch (err) {
+      return next(err);
+    }
+
+    return res.status(httpStatus.OK).json(response);
   });
 
 export default routes;
