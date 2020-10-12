@@ -7,6 +7,7 @@ import helmet from 'helmet';
 import httpStatus from 'http-status';
 import morgan from 'morgan';
 import routes from './routes';
+import ErrorType from './enums/error-type';
 
 const app = express();
 
@@ -23,7 +24,7 @@ app.use('/api', routes);
 app.use((_req, _res, next) => {
   const err = new Error('not_found');
   err.status = httpStatus.NOT_FOUND;
-  next();
+  next(err);
 });
 
 app.use((err, _req, res, next) => {
@@ -32,11 +33,15 @@ app.use((err, _req, res, next) => {
 
     res.status(httpStatus.BAD_REQUEST).json({
       error: {
-        type: 'client_error',
+        type: ErrorType.CLIENT_ERROR,
         message: error.msg,
         options: error.param,
         status: httpStatus.BAD_REQUEST,
       },
+    });
+  } else if (err.status === httpStatus.NOT_FOUND) {
+    res.status(err.status).json({
+      error: { type: err.type, message: err.message, status: err.status },
     });
   } else {
     res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR).json({
