@@ -1,3 +1,7 @@
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
+/* eslint-disable no-console */
+
 import fs from 'fs';
 import path from 'path';
 import Sequelize from 'sequelize';
@@ -26,6 +30,7 @@ const db = {
   Sequelize,
   models: {},
 };
+
 const dir = path.join(__dirname, 'models');
 
 fs.readdirSync(dir).forEach((file) => {
@@ -36,7 +41,6 @@ fs.readdirSync(dir).forEach((file) => {
 
     db.models[model.name] = model;
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.log(err.message);
     throw err;
   }
@@ -48,7 +52,6 @@ Object.keys(db.models).forEach((modelName) => {
       db.models[modelName].associate(db.models);
     }
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.log(err.message);
     throw err;
   }
@@ -57,10 +60,8 @@ Object.keys(db.models).forEach((modelName) => {
 (async () => {
   try {
     await db.sequelize.authenticate();
-    // eslint-disable-next-line no-console
     console.log('Successfully connected to database.');
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.log(`Failed to connect to the database: ${err}`);
   }
 })();

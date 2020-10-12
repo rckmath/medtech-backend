@@ -20,24 +20,36 @@ app.use(cors());
 
 app.use('/api', routes);
 
-app.use((req, res, next) => {
-  const err = new Error('Not found! Please check the URL.');
+app.use((_req, _res, next) => {
+  const err = new Error('not_found');
   err.status = httpStatus.NOT_FOUND;
   next();
 });
 
-// eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
-  res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR);
+app.use((err, _req, res, next) => {
+  if (err.errors && err.errors.length > 0) {
+    const error = err.errors.pop();
 
-  res.json({
-    error: {
-      message: err.message,
-      status: err.status,
-    },
-  });
+    res.status(httpStatus.BAD_REQUEST).json({
+      error: {
+        type: 'client_error',
+        message: error.msg,
+        options: error.param,
+        status: httpStatus.BAD_REQUEST,
+      },
+    });
+  } else {
+    res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR).json({
+      error: {
+        type: err.type,
+        message: err.message,
+        status: err.status,
+        stack: err.stack,
+      },
+    });
 
-  next(err);
+    next(err);
+  }
 });
 
 export default app;

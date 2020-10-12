@@ -4,7 +4,7 @@ require('regenerator-runtime/runtime');
 
 const Constants = require('../utils/constants').default;
 
-module.exports = {
+const config = {
   username: Constants.database.user,
   port: Constants.database.port,
   password: Constants.database.password,
@@ -12,3 +12,5 @@ module.exports = {
   host: Constants.database.host,
   dialect: 'postgres',
 };
+
+module.exports = config;

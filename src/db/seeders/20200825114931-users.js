@@ -1,12 +1,14 @@
+require('dotenv').config();
 const moment = require('moment-timezone');
 const UserType = require('../../enums/user-type').default;
+const { sha256 } = require('../../utils/tools');
 
 module.exports = {
   up: async (queryInterface) => {
     const exist = await queryInterface.rawSelect('tb_user', {
       where: {
         str_email: 'system-admin@medtech.com.br',
-        str_password: '123123',
+        str_password: sha256(process.env.SYSTEM_PASSWORD),
       },
     }, ['id']);
 
@@ -24,7 +26,7 @@ module.exports = {
       id: 1,
       str_name: 'System Admin',
       str_email: 'system-admin@medtech.com.br',
-      str_password: '96cae35ce8a9b0244178bf28e4966c2ce1b8385723a96a6b838858cdd6ca0a1e',
+      str_password: sha256(process.env.SYSTEM_PASSWORD),
       int_user_type: UserType.ADMIN,
       ...baseEntity,
     }], {});

@@ -1,35 +1,49 @@
 import { Op } from 'sequelize';
+import httpStatus from 'http-status';
 import ModelRepository from '../db/repository';
 import db from '../db/database';
+import ExtendableError from '../utils/error/extendable';
+import { UserCodeError } from '../utils/error/business-errors';
+import ErrorType from '../enums/error-type';
 
 const UserModel = db.models.User;
 
 const PrivateMethods = {
   checkIfUserExists: (exists, user) => {
-    if (!exists) { return false; }
-
     const emailExists = user.email === exists.email;
     const cpfExists = user.cpf === exists.cpf;
 
-    if (emailExists || cpfExists) return 'Já registrado!';
+    if (cpfExists) {
+      throw new ExtendableError(
+        ErrorType.BUSINESS,
+        UserCodeError.CPF_ALREADY_REGISTERED,
+        httpStatus.CONFLICT,
+      );
+    }
 
-    return false;
+    if (emailExists || cpfExists) {
+      throw new ExtendableError(
+        ErrorType.BUSINESS,
+        UserCodeError.EMAIL_ALREADY_REGISTERED,
+        httpStatus.CONFLICT,
+      );
+    }
   },
 };
 
 const Toolbox = {
-  getExistentUser: (user) => {
+  getExistentUser: async (user) => {
     const or = [];
 
     if (user.cpf) { or.push({ cpf: user.cpf }); }
 
     if (user.email) { or.push({ email: user.email }); }
 
-    const exists = ModelRepository.selectOne(UserModel, {
+    const exists = await ModelRepository.selectOne(UserModel, {
       where: { [Op.or]: or, deletedAt: null },
     });
 
-    PrivateMethods.checkIfUserExists(exists, user);
+    if (exists) { PrivateMethods.checkIfUserExists(exists, user); }
 
     return exists;
   },
@@ -60,7 +74,13 @@ export default class UserService {
   static async getById(id) {
     const user = await ModelRepository.selectOne(UserModel, { where: { id, deletedAt: null } });
 
-    if (!user) { return 'Not found!'; }
+    if (!user) {
+      throw new ExtendableError(
+        ErrorType.BUSINESS,
+        UserCodeError.USER_NOT_FOUND,
+        httpStatus.BAD_REQUEST,
+      );
+    }
 
     return user;
   }
@@ -77,9 +97,9 @@ export default class UserService {
   }
 
   static async deleteById(id, actor) {
-    return Promise.all([
+    await Promise.all([
       UserService.getById(id),
-      ModelRepository.deleteById(UserModel, id, actor.id),
+      ModelRepository.deleteById(UserModel, id, actor && actor.id),
     ]);
   }
 }
