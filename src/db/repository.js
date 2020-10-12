@@ -17,12 +17,10 @@ export default class ModelRepository {
         transaction: options ? options.transaction : null,
         returning: true,
       });
+
+      exclude.forEach((o) => delete response.dataValues[o]);
     } catch (err) {
-      throw new ExtendableError(
-        ErrorType.PERSISTENCE,
-        err.message,
-        httpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new ExtendableError(ErrorType.PERSISTENCE, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return response;
@@ -41,11 +39,7 @@ export default class ModelRepository {
 
       response = await ModelEntity.findOne(options);
     } catch (err) {
-      throw new ExtendableError(
-        ErrorType.PERSISTENCE,
-        err.message,
-        httpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new ExtendableError(ErrorType.PERSISTENCE, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return response;
@@ -59,11 +53,7 @@ export default class ModelRepository {
         where: { id: { [Op.in]: idList } },
       });
     } catch (err) {
-      throw new ExtendableError(
-        ErrorType.PERSISTENCE,
-        err.message,
-        httpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new ExtendableError(ErrorType.PERSISTENCE, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return response;
@@ -75,11 +65,7 @@ export default class ModelRepository {
     try {
       response = await ModelEntity.findAll(options);
     } catch (err) {
-      throw new ExtendableError(
-        ErrorType.PERSISTENCE,
-        err.message,
-        httpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new ExtendableError(ErrorType.PERSISTENCE, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return response;
@@ -95,11 +81,7 @@ export default class ModelRepository {
       };
       response = await ModelEntity.findAndCountAll(options);
     } catch (err) {
-      throw new ExtendableError(
-        ErrorType.PERSISTENCE,
-        err.message,
-        httpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new ExtendableError(ErrorType.PERSISTENCE, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return response;
@@ -116,12 +98,10 @@ export default class ModelRepository {
       });
 
       [, [response]] = response;
+
+      exclude.forEach((o) => delete response.dataValues[o]);
     } catch (err) {
-      throw new ExtendableError(
-        ErrorType.PERSISTENCE,
-        err.message,
-        httpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new ExtendableError(ErrorType.PERSISTENCE, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return response;
@@ -144,11 +124,7 @@ export default class ModelRepository {
       );
       [, [response]] = response;
     } catch (err) {
-      throw new ExtendableError(
-        ErrorType.PERSISTENCE,
-        err.message,
-        httpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new ExtendableError(ErrorType.PERSISTENCE, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return response;

@@ -5,6 +5,7 @@ import db from '../db/database';
 import ExtendableError from '../utils/error/extendable';
 import { UserCodeError } from '../utils/error/business-errors';
 import ErrorType from '../enums/error-type';
+import { sha256 } from '../utils/tools';
 
 const UserModel = db.models.User;
 
@@ -21,7 +22,7 @@ const PrivateMethods = {
       );
     }
 
-    if (emailExists || cpfExists) {
+    if (emailExists) {
       throw new ExtendableError(
         ErrorType.BUSINESS,
         UserCodeError.EMAIL_ALREADY_REGISTERED,
@@ -58,14 +59,12 @@ export default class UserService {
       name: user.name,
       cpf: user.cpf,
       email: user.email,
-      password: user.password,
-      cellphone: user.cellphone,
+      password: sha256(user.password),
+      phone: user.phone,
       birthday: user.birthday,
 
       genderType: user.gender,
       userType: user.type,
-
-      ip: user.ip,
 
       createdBy: actor && actor.id,
     });
@@ -88,7 +87,7 @@ export default class UserService {
   static async updateById(id, user, actor) {
     await ModelRepository.updateById(UserModel, id, {
       name: user.name,
-      cellphone: user.cellphone,
+      phone: user.phone,
 
       ip: user.ip,
 

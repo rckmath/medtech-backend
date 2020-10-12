@@ -13,7 +13,7 @@ const app = express();
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '20mb', type: 'application/json' }));
 app.use(compress());
 app.use(methodOverride());
 app.use(helmet());

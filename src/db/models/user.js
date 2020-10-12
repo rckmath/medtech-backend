@@ -8,8 +8,9 @@ export default (sequelize, DataTypes) => {
     cpf: { type: DataTypes.STRING, field: 'str_cpf', unique: true },
     email: { type: DataTypes.STRING, field: 'str_email', unique: true },
     password: { type: DataTypes.STRING, field: 'str_password' },
-    cellphone: { type: DataTypes.STRING, field: 'str_cellphone' },
+    phone: { type: DataTypes.STRING, field: 'str_phone' },
     birthday: { type: DataTypes.DATE, field: 'dt_birthday' },
+    profilePhotoUrl: { type: DataTypes.STRING, field: 'str_profile_photo_url' },
 
     genderType: { type: DataTypes.INTEGER, field: 'int_gender_type' },
     userType: { type: DataTypes.INTEGER, field: 'int_user_type' },

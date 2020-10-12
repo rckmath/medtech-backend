@@ -7,6 +7,7 @@ module.exports = {
   up: async (queryInterface) => {
     const exist = await queryInterface.rawSelect('tb_user', {
       where: {
+        id: 0,
         str_email: 'system-admin@medtech.com.br',
         str_password: sha256(process.env.SYSTEM_PASSWORD),
       },
@@ -23,7 +24,7 @@ module.exports = {
     };
 
     await queryInterface.bulkInsert('tb_user', [{
-      id: 1,
+      id: 0,
       str_name: 'System Admin',
       str_email: 'system-admin@medtech.com.br',
       str_password: sha256(process.env.SYSTEM_PASSWORD),

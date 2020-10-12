@@ -1,7 +1,7 @@
 import express from 'express';
 import httpStatus from 'http-status';
 import { param, validationResult } from 'express-validator';
-import schemaPackage from '../schemas/schema-package';
+import schemaPackage from '../schema';
 import UserService from '../../services/user';
 import schemaValidation from '../middlewares/schema-validation';
 import { ValidationCodeError } from '../../utils/error/business-errors';

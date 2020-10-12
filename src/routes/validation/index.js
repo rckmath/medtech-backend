@@ -7,13 +7,20 @@ const cpfValidation = {
   errorMessage: 'invalid_cpf',
 };
 
-const cellphoneValidation = {
+const phoneValidation = {
   in: 'body',
   custom: {
-    options: (cellphone) => /^[0-9]{13,14}$/g.test(cellphone),
+    options: (phone) => /^[0-9]{10,11}$/g.test(phone),
   },
   optional: true,
-  errorMessage: 'invalid_cellphone',
+  errorMessage: 'invalid_phone',
+};
+
+const stringValidation = {
+  in: 'body',
+  isString: true,
+  notEmpty: true,
+  errorMessage: 'invalid_string',
 };
 
 const emailValidation = {
@@ -26,8 +33,17 @@ const emailValidation = {
   errorMessage: 'invalid_email',
 };
 
+const ipValidation = {
+  in: 'body',
+  isIP: true,
+  optional: true,
+  errorMessage: 'invalid_ip_address',
+};
+
 export {
   cpfValidation,
-  cellphoneValidation,
+  phoneValidation,
   emailValidation,
+  stringValidation,
+  ipValidation,
 };
