@@ -141,4 +141,13 @@ schemaPackage.auth = {
   },
 };
 
+schemaPackage.appointment = {
+  create: {
+
+  },
+  update: {
+
+  },
+};
+
 export default schemaPackage;

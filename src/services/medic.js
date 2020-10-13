@@ -113,7 +113,7 @@ export default class MedicService {
     });
 
     if (!medic) {
-      throw new ExtendableError(ErrorType.BUSINESS, UserCodeError.USER_NOT_FOUND, httpStatus.BAD_REQUEST);
+      throw new ExtendableError(ErrorType.BUSINESS, MedicCodeError.MEDIC_NOT_FOUND, httpStatus.BAD_REQUEST);
     }
 
     return medic;

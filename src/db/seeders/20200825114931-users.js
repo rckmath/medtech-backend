@@ -7,7 +7,7 @@ module.exports = {
   up: async (queryInterface) => {
     const exist = await queryInterface.rawSelect('tb_user', {
       where: {
-        id: 0,
+        id: '5df95340-736e-4e11-b2fe-481d51275bfc',
         str_email: 'system-admin@medtech.com.br',
         str_password: sha256(process.env.SYSTEM_PASSWORD),
       },
@@ -24,7 +24,7 @@ module.exports = {
     };
 
     await queryInterface.bulkInsert('tb_user', [{
-      id: 0,
+      id: '5df95340-736e-4e11-b2fe-481d51275bfc',
       str_name: 'System Admin',
       str_email: 'system-admin@medtech.com.br',
       str_password: sha256(process.env.SYSTEM_PASSWORD),

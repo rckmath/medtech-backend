@@ -2,7 +2,7 @@ import express from 'express';
 import httpStatus from 'http-status';
 import { param, validationResult } from 'express-validator';
 import schemaPackage from '../schema';
-import MedicService from '../../services/medic';
+import AppointmentService from '../../services/appointment';
 import UserType from '../../enums/user-type';
 import { schemaValidation, authenticate, authorize } from '../middlewares';
 import { ValidationCodeError } from '../../utils/error/business-errors';
@@ -10,12 +10,14 @@ import { ValidationCodeError } from '../../utils/error/business-errors';
 const routes = express.Router();
 
 routes.post('/',
-  schemaValidation(schemaPackage.medic.create),
+  authenticate,
+  authorize([UserType.MEDIC]),
+  schemaValidation(schemaPackage.appointment.create),
   async (req, res, next) => {
     let response;
 
     try {
-      response = await MedicService.create(req.body);
+      response = await AppointmentService.create(req.body, req.user);
     } catch (err) {
       return next(err);
     }
@@ -25,14 +27,14 @@ routes.post('/',
 
 routes.get('/:id',
   authenticate,
-  authorize([UserType.ADMIN]),
+  authorize([UserType.ADMIN, UserType.MEDIC]),
   param('id').isUUID().withMessage(ValidationCodeError.INVALID_ID),
   async (req, res, next) => {
     let response;
 
     try {
       validationResult(req).throw();
-      response = await MedicService.getById(req.params.id, req.user);
+      response = await AppointmentService.getById(req.params.id, req.user);
     } catch (err) {
       return next(err);
     }
@@ -44,12 +46,12 @@ routes.put('/:id',
   authenticate,
   authorize([UserType.ADMIN, UserType.MEDIC]),
   param('id').isUUID().withMessage(ValidationCodeError.INVALID_ID),
-  schemaValidation(schemaPackage.medic.update),
+  schemaValidation(schemaPackage.appointment.update),
   async (req, res, next) => {
     let response;
 
     try {
-      response = await MedicService.updateById(req.params.id, req.body, req.user);
+      response = await AppointmentService.updateById(req.params.id, req.body, req.user);
     } catch (err) {
       return next(err);
     }

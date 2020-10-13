@@ -57,13 +57,13 @@ routes.get('/me',
 routes.get('/:id',
   authenticate,
   authorize([UserType.ADMIN]),
-  param('id').isNumeric().withMessage(ValidationCodeError.INVALID_ID),
+  param('id').isUUID().withMessage(ValidationCodeError.INVALID_ID),
   async (req, res, next) => {
     let response;
 
     try {
       validationResult(req).throw();
-      response = await UserService.getById(req.params.id);
+      response = await UserService.getById(req.params.id, req.user);
     } catch (err) {
       return next(err);
     }
@@ -74,13 +74,13 @@ routes.get('/:id',
 routes.put('/:id',
   authenticate,
   authorize([UserType.ADMIN, UserType.MEDIC, UserType.PATIENT]),
-  param('id').isNumeric().withMessage(ValidationCodeError.INVALID_ID),
+  param('id').isUUID().withMessage(ValidationCodeError.INVALID_ID),
   schemaValidation(schemaPackage.user.update),
   async (req, res, next) => {
     let response;
 
     try {
-      response = await UserService.updateById(req.params.id, req.body);
+      response = await UserService.updateById(req.params.id, req.body, req.user);
     } catch (err) {
       return next(err);
     }
@@ -91,13 +91,13 @@ routes.put('/:id',
 routes.delete('/:id',
   authenticate,
   authorize([UserType.ADMIN]),
-  param('id').isNumeric().withMessage(ValidationCodeError.INVALID_ID),
+  param('id').isUUID().withMessage(ValidationCodeError.INVALID_ID),
   async (req, res, next) => {
     let response;
 
     try {
       validationResult(req).throw();
-      response = await UserService.deleteById(req.params.id);
+      response = await UserService.deleteById(req.params.id, req.user);
     } catch (err) {
       return next(err);
     }

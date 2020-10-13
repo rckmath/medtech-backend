@@ -9,7 +9,12 @@ const UserCodeError = {
 };
 
 const MedicCodeError = {
+  MEDIC_NOT_FOUND: 'medic_not_found',
   CRM_ALREADY_REGISTERED: 'crm_already_registered',
+};
+
+const AppointmentCodeError = {
+  APPOINTMENT_NOT_FOUND: 'appointment_not_found',
 };
 
 const AuthCodeError = {
@@ -22,4 +27,5 @@ export {
   MedicCodeError,
   ValidationCodeError,
   AuthCodeError,
+  AppointmentCodeError,
 };
