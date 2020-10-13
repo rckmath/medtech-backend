@@ -5,9 +5,10 @@ import db from '../db/database';
 import ExtendableError from '../utils/error/extendable';
 import { UserCodeError } from '../utils/error/business-errors';
 import ErrorType from '../enums/error-type';
-import { sha256 } from '../utils/tools';
+import { serviceOrderHelper, sha256 } from '../utils/tools';
 import UserType from '../enums/user-type';
 import MedicService from './medic';
+import CommonSearchParameter from './search-parameters';
 
 const UserModel = db.models.User;
 const MedicModel = db.models.Medic;
@@ -101,6 +102,20 @@ export default class UserService {
     }
 
     return user;
+  }
+
+  static async getAllWithPagination(searchParameter) {
+    let response = null;
+    const { where } = CommonSearchParameter.createCommonQuery(searchParameter);
+
+    response = await ModelRepository.selectWithPagination(UserModel, {
+      where,
+      offset: searchParameter.offset,
+      limit: searchParameter.limit,
+      order: [serviceOrderHelper(searchParameter)],
+    });
+
+    return response;
   }
 
   static async updateById(id, user, actor) {

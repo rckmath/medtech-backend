@@ -6,6 +6,8 @@ import { AppointmentCodeError } from '../utils/error/business-errors';
 import ErrorType from '../enums/error-type';
 import UserType from '../enums/user-type';
 import AppointmentStatus from '../enums/appointment-status';
+import { serviceOrderHelper } from '../utils/tools';
+import CommonSearchParameter from './search-parameters';
 
 const UserModel = db.models.User;
 const MedicModel = db.models.Medic;
@@ -96,6 +98,20 @@ export default class AppointmentService {
     }
 
     return appointment;
+  }
+
+  static async getAllWithPagination(searchParameter) {
+    let response = null;
+    const { where } = CommonSearchParameter.createCommonQuery(searchParameter);
+
+    response = await ModelRepository.selectWithPagination(AppointmentModel, {
+      where,
+      offset: searchParameter.offset,
+      limit: searchParameter.limit,
+      order: [serviceOrderHelper(searchParameter)],
+    });
+
+    return response;
   }
 
   static async updateById(id, appointment, actor) {
