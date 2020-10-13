@@ -14,5 +14,6 @@ router.get('/status',
 router.use('/user', require('./controllers/user').default);
 router.use('/auth', require('./controllers/auth').default);
 router.use('/medic', require('./controllers/medic').default);
+router.use('/appointment', require('./controllers/appointment').default);
 
 export default router;

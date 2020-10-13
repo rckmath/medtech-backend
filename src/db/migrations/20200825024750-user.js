@@ -1,7 +1,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('tb_user', {
-      id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+      id: { type: Sequelize.UUID, primaryKey: true },
 
       str_name: { type: Sequelize.STRING },
       str_cpf: { type: Sequelize.STRING(11), unique: true },

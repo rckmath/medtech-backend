@@ -1,10 +1,10 @@
 export default (sequelize, DataTypes) => {
   const Medic = sequelize.define('Medic', {
     id: {
-      type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, field: 'id',
+      type: DataTypes.UUID, primaryKey: true, field: 'id', defaultValue: DataTypes.UUIDV4,
     },
 
-    userId: { type: DataTypes.INTEGER, field: 'id_user' },
+    userId: { type: DataTypes.UUID, field: 'id_user' },
 
     regNum: { type: DataTypes.INTEGER, field: 'int_reg_num' },
     regUf: { type: DataTypes.STRING, field: 'str_reg_uf' },

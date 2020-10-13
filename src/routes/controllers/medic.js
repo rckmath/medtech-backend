@@ -26,13 +26,13 @@ routes.post('/',
 routes.get('/:id',
   authenticate,
   authorize([UserType.ADMIN]),
-  param('id').isNumeric().withMessage(ValidationCodeError.INVALID_ID),
+  param('id').isUUID().withMessage(ValidationCodeError.INVALID_ID),
   async (req, res, next) => {
     let response;
 
     try {
       validationResult(req).throw();
-      response = await MedicService.getById(req.params.id);
+      response = await MedicService.getById(req.params.id, req.user);
     } catch (err) {
       return next(err);
     }
@@ -43,13 +43,13 @@ routes.get('/:id',
 routes.put('/:id',
   authenticate,
   authorize([UserType.ADMIN, UserType.MEDIC]),
-  param('id').isNumeric().withMessage(ValidationCodeError.INVALID_ID),
+  param('id').isUUID().withMessage(ValidationCodeError.INVALID_ID),
   schemaValidation(schemaPackage.medic.update),
   async (req, res, next) => {
     let response;
 
     try {
-      response = await MedicService.updateById(req.params.id, req.body);
+      response = await MedicService.updateById(req.params.id, req.body, req.user);
     } catch (err) {
       return next(err);
     }

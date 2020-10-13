@@ -54,9 +54,11 @@ export default class AuthService {
     try {
       verifiedToken = jwt.verify(token, Constants.auth.jwtSecret);
     } catch (err) {
-      throw new ExtendableError(
-        ErrorType.UNAUTHORIZED, 'Authentication failed!', httpStatus.UNAUTHORIZED,
-      );
+      throw new ExtendableError(ErrorType.UNAUTHORIZED, 'Authentication failed!', httpStatus.UNAUTHORIZED);
+    }
+
+    if (!verifiedToken) {
+      throw new ExtendableError(ErrorType.UNAUTHORIZED, 'Authentication failed!', httpStatus.UNAUTHORIZED);
     }
 
     const user = await UserService.getById(verifiedToken.id);

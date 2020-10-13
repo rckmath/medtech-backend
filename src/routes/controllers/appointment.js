@@ -2,7 +2,7 @@ import express from 'express';
 import httpStatus from 'http-status';
 import { param, validationResult } from 'express-validator';
 import schemaPackage from '../schema';
-import UserService from '../../services/user';
+import AppointmentService from '../../services/appointment';
 import UserType from '../../enums/user-type';
 import { schemaValidation, authenticate, authorize } from '../middlewares';
 import { ValidationCodeError } from '../../utils/error/business-errors';
@@ -10,12 +10,14 @@ import { ValidationCodeError } from '../../utils/error/business-errors';
 const routes = express.Router();
 
 routes.post('/',
-  schemaValidation(schemaPackage.user.create),
+  authenticate,
+  authorize([UserType.MEDIC]),
+  schemaValidation(schemaPackage.appointment.create),
   async (req, res, next) => {
     let response;
 
     try {
-      response = await UserService.createPatient(req.body);
+      response = await AppointmentService.create(req.body, req.user);
     } catch (err) {
       return next(err);
     }
@@ -23,30 +25,15 @@ routes.post('/',
     return res.status(httpStatus.CREATED).json(response);
   });
 
-routes.post('/admin',
+routes.get('/my',
   authenticate,
-  authorize([UserType.ADMIN]),
-  schemaValidation(schemaPackage.user.create),
+  authorize([UserType.MEDIC, UserType.PATIENT]),
   async (req, res, next) => {
     let response;
 
     try {
-      response = await UserService.create(req.body, req.user);
-    } catch (err) {
-      return next(err);
-    }
-
-    return res.status(httpStatus.CREATED).json(response);
-  });
-
-routes.get('/me',
-  authenticate,
-  authorize([UserType.ADMIN, UserType.MEDIC, UserType.PATIENT]),
-  async (req, res, next) => {
-    let response;
-
-    try {
-      response = await UserService.getById(req.user.id);
+      validationResult(req).throw();
+      response = await AppointmentService.getAllMyAppointments(req.user);
     } catch (err) {
       return next(err);
     }
@@ -56,14 +43,14 @@ routes.get('/me',
 
 routes.get('/:id',
   authenticate,
-  authorize([UserType.ADMIN]),
+  authorize([UserType.ADMIN, UserType.MEDIC]),
   param('id').isUUID().withMessage(ValidationCodeError.INVALID_ID),
   async (req, res, next) => {
     let response;
 
     try {
       validationResult(req).throw();
-      response = await UserService.getById(req.params.id, req.user);
+      response = await AppointmentService.getById(req.params.id, req.user);
     } catch (err) {
       return next(err);
     }
@@ -73,14 +60,14 @@ routes.get('/:id',
 
 routes.put('/:id',
   authenticate,
-  authorize([UserType.ADMIN, UserType.MEDIC, UserType.PATIENT]),
+  authorize([UserType.ADMIN, UserType.MEDIC]),
   param('id').isUUID().withMessage(ValidationCodeError.INVALID_ID),
-  schemaValidation(schemaPackage.user.update),
+  schemaValidation(schemaPackage.appointment.update),
   async (req, res, next) => {
     let response;
 
     try {
-      response = await UserService.updateById(req.params.id, req.body, req.user);
+      response = await AppointmentService.updateById(req.params.id, req.body, req.user);
     } catch (err) {
       return next(err);
     }
@@ -90,14 +77,14 @@ routes.put('/:id',
 
 routes.delete('/:id',
   authenticate,
-  authorize([UserType.ADMIN]),
+  authorize([UserType.ADMIN, UserType.MEDIC]),
   param('id').isUUID().withMessage(ValidationCodeError.INVALID_ID),
   async (req, res, next) => {
     let response;
 
     try {
       validationResult(req).throw();
-      response = await UserService.deleteById(req.params.id, req.user);
+      response = await AppointmentService.deleteById(req.params.id, req.user);
     } catch (err) {
       return next(err);
     }
