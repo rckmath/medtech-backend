@@ -4,6 +4,7 @@ import db from '../db/database';
 import ExtendableError from '../utils/error/extendable';
 import { AppointmentCodeError } from '../utils/error/business-errors';
 import ErrorType from '../enums/error-type';
+import UserType from '../enums/user-type';
 import AppointmentStatus from '../enums/appointment-status';
 
 const UserModel = db.models.User;
@@ -21,7 +22,40 @@ export default class AppointmentService {
 
       createdBy: actor && actor.id,
     });
+  }
 
+  static async getAllMyAppointments(actor) {
+    const include = [{
+      model: MedicModel,
+      as: 'medic',
+      where: { deletedAt: null },
+      include: {
+        model: UserModel,
+        as: 'user',
+        where: { deletedAt: null },
+        attributes: ['name', 'email', 'phone'],
+      },
+    }, {
+      model: UserModel,
+      as: 'patient',
+      where: { deletedAt: null },
+      attributes: {
+        exclude: ['password', 'recoveryToken', 'recoveryTokenExpiresAt'],
+      },
+    }];
+
+    if (actor.userType === UserType.MEDIC) {
+      include[0].where.id = actor.medic.id;
+    } else if (actor.uesrType === UserType.PATIENT) {
+      include[1].where.id = actor.id;
+    }
+
+    const appointments = await ModelRepository.selectAll(AppointmentModel, {
+      where: { deletedAt: null },
+      include,
+    });
+
+    return appointments;
   }
 
   static async getSimpleById(id) {
@@ -67,6 +101,7 @@ export default class AppointmentService {
   static async updateById(id, appointment, actor) {
     await ModelRepository.updateById(AppointmentModel, id, {
       status: appointment.status,
+      appointmentAt: appointment.at,
 
       updatedBy: actor && actor.id,
     });

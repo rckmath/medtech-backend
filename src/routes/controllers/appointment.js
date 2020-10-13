@@ -25,6 +25,22 @@ routes.post('/',
     return res.status(httpStatus.CREATED).json(response);
   });
 
+routes.get('/my',
+  authenticate,
+  authorize([UserType.MEDIC, UserType.PATIENT]),
+  async (req, res, next) => {
+    let response;
+
+    try {
+      validationResult(req).throw();
+      response = await AppointmentService.getAllMyAppointments(req.user);
+    } catch (err) {
+      return next(err);
+    }
+
+    return res.status(httpStatus.OK).json(response);
+  });
+
 routes.get('/:id',
   authenticate,
   authorize([UserType.ADMIN, UserType.MEDIC]),
@@ -52,6 +68,23 @@ routes.put('/:id',
 
     try {
       response = await AppointmentService.updateById(req.params.id, req.body, req.user);
+    } catch (err) {
+      return next(err);
+    }
+
+    return res.status(httpStatus.OK).json(response);
+  });
+
+routes.delete('/:id',
+  authenticate,
+  authorize([UserType.ADMIN, UserType.MEDIC]),
+  param('id').isUUID().withMessage(ValidationCodeError.INVALID_ID),
+  async (req, res, next) => {
+    let response;
+
+    try {
+      validationResult(req).throw();
+      response = await AppointmentService.deleteById(req.params.id, req.user);
     } catch (err) {
       return next(err);
     }
