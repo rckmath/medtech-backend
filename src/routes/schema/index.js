@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
 import validator from 'validator';
 import GenderType from '../../enums/gender-type';
 import UserType from '../../enums/user-type';
