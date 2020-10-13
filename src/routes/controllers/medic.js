@@ -42,9 +42,9 @@ routes.get('/:id',
 
 routes.put('/:id',
   authenticate,
-  authorize([UserType.ADMIN]),
+  authorize([UserType.ADMIN, UserType.MEDIC]),
   param('id').isNumeric().withMessage(ValidationCodeError.INVALID_ID),
-  schemaValidation(schemaPackage.user.update),
+  schemaValidation(schemaPackage.medic.update),
   async (req, res, next) => {
     let response;
 

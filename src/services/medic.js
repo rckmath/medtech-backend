@@ -125,6 +125,9 @@ export default class MedicService {
       regNum: medic.regNum,
       regUf: medic.regUf,
 
+      scheduleStartsAt: medic.scheduleStartsAt,
+      scheduleEndsAt: medic.scheduleEndsAt,
+
       updatedBy: actor && actor.id,
     });
   }

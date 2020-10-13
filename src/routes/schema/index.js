@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import validator from 'validator';
 import GenderType from '../../enums/gender-type';
 import UserType from '../../enums/user-type';
@@ -89,6 +90,39 @@ schemaPackage.medic = {
     },
     specialization: { ...stringValidation, errorMessage: 'invalid_specialization' },
     ...schemaPackage.user.create,
+  },
+  update: {
+    regNum: {
+      in: 'body',
+      isInt: true,
+      optional: true,
+      errorMessage: 'invalid_crm_number',
+    },
+    regUf: {
+      in: 'body',
+      custom: {
+        options: (state) => StateCode.find((o) => o === state),
+      },
+      optional: true,
+      errorMessage: 'invalid_uf',
+    },
+    specialization: { ...stringValidation, optional: true, errorMessage: 'invalid_specialization' },
+    scheduleStartsAt: {
+      in: 'body',
+      custom: {
+        options: (time) => dayjs(time, 'HH:mm:ss', true).isValid(),
+      },
+      optional: true,
+      errorMessage: 'invalid_schedule_time',
+    },
+    scheduleEndsAt: {
+      in: 'body',
+      custom: {
+        options: (time) => dayjs(time, 'HH:mm:ss', true).isValid(),
+      },
+      optional: true,
+      errorMessage: 'invalid_schedule_time',
+    },
   },
 };
 
