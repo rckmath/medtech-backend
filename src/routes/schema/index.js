@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
+import validator from 'validator';
 import GenderType from '../../enums/gender-type';
 import UserType from '../../enums/user-type';
+import StateCode from '../../enums/state-uf-list';
 import {
   emailValidation, cpfValidation, phoneValidation,
   stringValidation, ipValidation, passwordValidation,
@@ -12,8 +14,8 @@ schemaPackage.user = {
   create: {
     name: { ...stringValidation, errorMessage: 'invalid_name' },
     cpf: cpfValidation,
-    email: emailValidation,
     password: passwordValidation,
+    email: { ...emailValidation, optional: false },
     phone: { ...phoneValidation, optional: false },
     birthday: {
       in: 'body',
@@ -29,6 +31,7 @@ schemaPackage.user = {
         // eslint-disable-next-line max-len
         options: (profilePhoto) => /^data:image\/(?:png|jpeg|jpg)(?:;charset=utf-8)?;base64,(?:[A-Za-z0-9]|[+/])+={0,2}/g.test(profilePhoto),
       },
+      optional: true,
       errorMessage: 'invalid_photo_file',
     },
     gender: {
@@ -59,12 +62,48 @@ schemaPackage.user = {
       optional: true,
       errorMessage: 'invalid_photo_file',
     },
+    type: {
+      in: 'body',
+      custom: {
+        options: (type) => Object.values(UserType).some((o) => o === type),
+      },
+      optional: true,
+      errorMessage: 'invalid_user_type',
+    },
+  },
+};
+
+schemaPackage.medic = {
+  create: {
+    regNum: {
+      in: 'body',
+      isInt: true,
+      errorMessage: 'invalid_crm_number',
+    },
+    regUf: {
+      in: 'body',
+      custom: {
+        options: (state) => StateCode.find((o) => o === state),
+      },
+      errorMessage: 'invalid_uf',
+    },
+    specialization: { ...stringValidation, errorMessage: 'invalid_specialization' },
+    ...schemaPackage.user.create,
   },
 };
 
 schemaPackage.auth = {
-  login: {
-    email: emailValidation,
+  signin: {
+    login: {
+      in: 'body',
+      custom: {
+        options: (login) => validator.isEmail(login) || /^[0-9]{11}/g.test(login),
+      },
+      customSanitizer: {
+        options: (login) => login && login.toLowerCase(),
+      },
+      errorMessage: 'invalid_login',
+    },
     password: passwordValidation,
   },
 };

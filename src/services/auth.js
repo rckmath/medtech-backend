@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import httpStatus from 'http-status';
 import jwt from 'jsonwebtoken';
 import ModelRepository from '../db/repository';
@@ -12,10 +13,10 @@ import UserService from './user';
 const UserModel = db.models.User;
 
 export default class AuthService {
-  static async login(email, password) {
+  static async login(login, password) {
     const user = await ModelRepository.selectOne(UserModel, {
       where: {
-        email,
+        [Op.or]: [{ email: login }, { cpf: login }],
         password: sha256(password),
         deletedAt: null,
       },
