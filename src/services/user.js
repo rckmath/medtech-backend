@@ -7,8 +7,10 @@ import { UserCodeError } from '../utils/error/business-errors';
 import ErrorType from '../enums/error-type';
 import { sha256 } from '../utils/tools';
 import UserType from '../enums/user-type';
+import MedicService from './medic';
 
 const UserModel = db.models.User;
+const MedicModel = db.models.Medic;
 
 const PrivateMethods = {
   checkIfUserExists: (exists, user) => {
@@ -16,19 +18,11 @@ const PrivateMethods = {
     const cpfExists = user.cpf === exists.cpf;
 
     if (cpfExists) {
-      throw new ExtendableError(
-        ErrorType.BUSINESS,
-        UserCodeError.CPF_ALREADY_REGISTERED,
-        httpStatus.CONFLICT,
-      );
+      throw new ExtendableError(ErrorType.BUSINESS, UserCodeError.CPF_ALREADY_REGISTERED, httpStatus.CONFLICT);
     }
 
     if (emailExists) {
-      throw new ExtendableError(
-        ErrorType.BUSINESS,
-        UserCodeError.EMAIL_ALREADY_REGISTERED,
-        httpStatus.CONFLICT,
-      );
+      throw new ExtendableError(ErrorType.BUSINESS, UserCodeError.EMAIL_ALREADY_REGISTERED, httpStatus.CONFLICT);
     }
   },
 };
@@ -61,6 +55,10 @@ export default class UserService {
   static async create(user, actor) {
     await Toolbox.getExistentUser(user);
 
+    if (user.type === UserType.MEDIC) {
+      return MedicService.create(user, actor);
+    }
+
     return ModelRepository.create(UserModel, {
       name: user.name,
       cpf: user.cpf,
@@ -74,17 +72,32 @@ export default class UserService {
 
       createdBy: actor && actor.id,
     });
+
   }
 
-  static async getById(id) {
+  static async getSimpleById(id) {
     const user = await ModelRepository.selectOne(UserModel, { where: { id, deletedAt: null } });
 
     if (!user) {
-      throw new ExtendableError(
-        ErrorType.BUSINESS,
-        UserCodeError.USER_NOT_FOUND,
-        httpStatus.BAD_REQUEST,
-      );
+      throw new ExtendableError(ErrorType.BUSINESS, UserCodeError.USER_NOT_FOUND, httpStatus.BAD_REQUEST);
+    }
+
+    return user;
+  }
+
+  static async getById(id) {
+    const user = await ModelRepository.selectOne(UserModel, {
+      where: { id, deletedAt: null },
+      include: {
+        model: MedicModel,
+        as: 'medic',
+        where: { deletedAt: null },
+        required: false,
+      },
+    });
+
+    if (!user) {
+      throw new ExtendableError(ErrorType.BUSINESS, UserCodeError.USER_NOT_FOUND, httpStatus.BAD_REQUEST);
     }
 
     return user;
@@ -92,6 +105,8 @@ export default class UserService {
 
   static async updateById(id, user, actor) {
     await ModelRepository.updateById(UserModel, id, {
+      userType: user.type,
+
       name: user.name,
       phone: user.phone,
 
@@ -102,9 +117,12 @@ export default class UserService {
   }
 
   static async deleteById(id, actor) {
+    const user = await UserService.getById(id);
+
     await Promise.all([
-      UserService.getById(id),
       ModelRepository.deleteById(UserModel, id, actor && actor.id),
+      user.userType === UserType.MEDIC
+        ? ModelRepository.deleteById(MedicModel, user.medic.id, actor && actor.id) : '',
     ]);
   }
 }

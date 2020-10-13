@@ -4,10 +4,10 @@ module.exports = {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 
       str_name: { type: Sequelize.STRING },
-      str_cpf: { type: Sequelize.STRING, unique: true },
+      str_cpf: { type: Sequelize.STRING(11), unique: true },
       str_email: { type: Sequelize.STRING, unique: true },
       str_password: { type: Sequelize.STRING },
-      str_phone: { type: Sequelize.STRING },
+      str_phone: { type: Sequelize.STRING(11) },
       str_ip: { type: Sequelize.STRING },
 
       dt_birthday: { type: Sequelize.DATE },

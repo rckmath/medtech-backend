@@ -8,6 +8,10 @@ const UserCodeError = {
   EMAIL_ALREADY_REGISTERED: 'email_already_registered',
 };
 
+const MedicCodeError = {
+  CRM_ALREADY_REGISTERED: 'crm_already_registered',
+};
+
 const AuthCodeError = {
   BAD_CREDENTIALS: 'bad_credentials',
   ACCESS_NOT_ALLOWED: 'access_not_allowed',
@@ -15,6 +19,7 @@ const AuthCodeError = {
 
 export {
   UserCodeError,
+  MedicCodeError,
   ValidationCodeError,
   AuthCodeError,
 };

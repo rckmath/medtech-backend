@@ -31,7 +31,7 @@ routes.post('/admin',
     let response;
 
     try {
-      response = await UserService.create(req.body);
+      response = await UserService.create(req.body, req.user);
     } catch (err) {
       return next(err);
     }
