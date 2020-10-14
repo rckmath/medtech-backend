@@ -73,7 +73,7 @@ routes.get('/',
         ...appointmentFilters(req),
       };
 
-      response = await AppointmentService.getAllWithPagination(searchParameter);
+      response = await AppointmentService.getAllWithPagination(searchParameter, req.user);
     } catch (err) {
       return next(err);
     }

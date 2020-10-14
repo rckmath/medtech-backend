@@ -70,9 +70,13 @@ export default class AppointmentService {
     return appointment;
   }
 
-  static async getById(id) {
+  static async getById(id, actor) {
+    const where = { id, deletedAt: null };
+
+    if (actor.userType === UserType.MEDIC) { where.medicId = actor.medic.id; }
+
     const appointment = await ModelRepository.selectOne(AppointmentModel, {
-      where: { id, deletedAt: null },
+      where,
       include: [{
         model: UserModel,
         as: 'patient',
@@ -100,14 +104,16 @@ export default class AppointmentService {
     return appointment;
   }
 
-  static async getAllWithPagination(searchParameter) {
+  static async getAllWithPagination(searchParameter, actor) {
     let response = null;
     let where = {};
+
+    if (actor.userType === UserType.MEDIC) { where.medicId = actor.medic.id; }
 
     const commonQuery = SearchParameter.createCommonQuery(searchParameter);
     const appointmentQuery = SearchParameter.createAppointmentQuery(searchParameter);
 
-    where = { ...commonQuery.where, ...appointmentQuery.where };
+    where = { ...where, ...commonQuery.where, ...appointmentQuery.where };
 
     response = await ModelRepository.selectWithPagination(AppointmentModel, {
       where,

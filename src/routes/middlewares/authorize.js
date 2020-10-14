@@ -8,11 +8,7 @@ export default function authorize(permissionList) {
 
     try {
       if (!hasAccess) {
-        throw new ExtendableError(
-          ErrorType.FORBIDDEN,
-          'Permission denied.',
-          httpStatus.FORBIDDEN,
-        );
+        throw new ExtendableError(ErrorType.FORBIDDEN, 'Permission denied.', httpStatus.FORBIDDEN);
       }
 
       return next();

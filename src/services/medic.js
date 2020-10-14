@@ -134,8 +134,6 @@ export default class MedicService {
     const userQuery = SearchParameter.createUserQuery(searchParameter);
     const medicQuery = SearchParameter.createMedicQuery(searchParameter);
 
-    console.log(searchParameter);
-
     where = {
       ...commonQuery.where,
       ...medicQuery.where,
@@ -162,6 +160,12 @@ export default class MedicService {
   }
 
   static async updateById(id, medic, actor) {
+    if (actor.userType === UserType.MEDIC) {
+      if (medic.regNum || medic.regUf) {
+        throw new ExtendableError(ErrorType.FORBIDDEN, 'Permission denied.', httpStatus.FORBIDDEN);
+      }
+    }
+
     await ModelRepository.updateById(MedicModel, id, {
       specialization: medic.specialization,
       regNum: medic.regNum,
