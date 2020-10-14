@@ -51,8 +51,11 @@ schemaPackage.user = {
     },
   },
   update: {
+    name: { ...stringValidation, optional: true, errorMessage: 'invalid_name' },
     phone: phoneValidation,
+    cpf: { ...cpfValidation, optional: true },
     ip: ipValidation,
+    email: emailValidation,
     profilePhoto: {
       in: 'body',
       custom: {

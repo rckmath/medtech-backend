@@ -126,11 +126,23 @@ export default class UserService {
   }
 
   static async updateById(id, user, actor) {
+    if (actor.userType !== UserType.ADMIN) {
+      if (user.userType || user.cpf || user.email || user.name) {
+        throw new ExtendableError(ErrorType.FORBIDDEN, 'Permission denied.', httpStatus.FORBIDDEN);
+      }
+    }
+
     await ModelRepository.updateById(UserModel, id, {
       userType: user.type,
 
       name: user.name,
+      email: user.email,
+      cpf: user.cpf,
       phone: user.phone,
+      birthday: user.birthday,
+      profilePhotoUrl: user.profilePhotoUrl,
+      recoveryToken: user.recoveryToken,
+      recoveryTokenExpiresAt: user.recoveryTokenExpiresAt,
 
       ip: user.ip,
 
