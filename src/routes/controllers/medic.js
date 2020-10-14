@@ -44,7 +44,7 @@ routes.get('/:id',
 
 routes.get('/',
   authenticate,
-  authorize([UserType.ADMIN, UserType.MEDIC]),
+  authorize([UserType.ADMIN]),
   async (req, res, next) => {
     let response;
 
