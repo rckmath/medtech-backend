@@ -5,16 +5,22 @@ import db from '../db/database';
 import ExtendableError from '../utils/error/extendable';
 import { UserCodeError, MedicCodeError } from '../utils/error/business-errors';
 import ErrorType from '../enums/error-type';
-import { sha256 } from '../utils/tools';
+import { serviceOrderHelper, sha256 } from '../utils/tools';
 import UserType from '../enums/user-type';
+import SearchParameter from './search-parameters';
 
 const MedicModel = db.models.Medic;
 const UserModel = db.models.User;
 
 const PrivateMethods = {
   checkIfUserExists: (exists, medic) => {
-    const emailExists = medic.email === exists.user && exists.user.email;
-    const cpfExists = medic.cpf === exists.user && exists.user.cpf;
+    let emailExists;
+    let cpfExists;
+
+    if (exists.user) {
+      emailExists = medic.email === exists.user.email;
+      cpfExists = medic.cpf === exists.user.cpf;
+    }
 
     if (cpfExists) {
       throw new ExtendableError(ErrorType.BUSINESS, UserCodeError.CPF_ALREADY_REGISTERED, httpStatus.CONFLICT);
@@ -117,6 +123,42 @@ export default class MedicService {
     }
 
     return medic;
+  }
+
+  static async getAllWithPagination(searchParameter) {
+    let response = null;
+    let where = {};
+    let userWhere = { deletedAt: null };
+
+    const commonQuery = SearchParameter.createCommonQuery(searchParameter);
+    const userQuery = SearchParameter.createUserQuery(searchParameter);
+    const medicQuery = SearchParameter.createMedicQuery(searchParameter);
+
+    console.log(searchParameter);
+
+    where = {
+      ...commonQuery.where,
+      ...medicQuery.where,
+    };
+
+    userWhere = {
+      ...userQuery.where,
+    };
+
+    response = await ModelRepository.selectWithPagination(MedicModel, {
+      where,
+      offset: searchParameter.offset,
+      limit: searchParameter.limit,
+      order: [serviceOrderHelper(searchParameter)],
+      include: {
+        model: UserModel,
+        as: 'user',
+        where: userWhere,
+        required: true,
+      },
+    });
+
+    return response;
   }
 
   static async updateById(id, medic, actor) {

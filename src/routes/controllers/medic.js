@@ -6,6 +6,8 @@ import MedicService from '../../services/medic';
 import UserType from '../../enums/user-type';
 import { schemaValidation, authenticate, authorize } from '../middlewares';
 import { ValidationCodeError } from '../../utils/error/business-errors';
+import { controllerPaginationHelper } from '../../utils/tools';
+import { commonFilters, userFilters, medicFilters } from './filter';
 
 const routes = express.Router();
 
@@ -33,6 +35,28 @@ routes.get('/:id',
     try {
       validationResult(req).throw();
       response = await MedicService.getById(req.params.id, req.user);
+    } catch (err) {
+      return next(err);
+    }
+
+    return res.status(httpStatus.OK).json(response);
+  });
+
+routes.get('/',
+  authenticate,
+  authorize([UserType.ADMIN]),
+  async (req, res, next) => {
+    let response;
+
+    try {
+      const searchParameter = {
+        ...controllerPaginationHelper(req),
+        ...commonFilters(req),
+        ...userFilters(req),
+        ...medicFilters(req),
+      };
+
+      response = await MedicService.getAllWithPagination(searchParameter);
     } catch (err) {
       return next(err);
     }
