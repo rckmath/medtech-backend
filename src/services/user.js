@@ -8,7 +8,7 @@ import ErrorType from '../enums/error-type';
 import { serviceOrderHelper, sha256 } from '../utils/tools';
 import UserType from '../enums/user-type';
 import MedicService from './medic';
-import CommonSearchParameter from './search-parameters';
+import SearchParameter from './search-parameters';
 
 const UserModel = db.models.User;
 const MedicModel = db.models.Medic;
@@ -104,9 +104,16 @@ export default class UserService {
     return user;
   }
 
-  static async getAllWithPagination(searchParameter) {
+  static async getAllWithPagination(searchParameter, actor) {
     let response = null;
-    const { where } = CommonSearchParameter.createCommonQuery(searchParameter);
+    let where = {};
+
+    if (actor.userType === UserType.MEDIC) { where.userType = UserType.PATIENT; }
+
+    const commonQuery = SearchParameter.createCommonQuery(searchParameter);
+    const userQuery = SearchParameter.createUserQuery(searchParameter);
+
+    where = { ...where, ...commonQuery.where, ...userQuery.where };
 
     response = await ModelRepository.selectWithPagination(UserModel, {
       where,

@@ -6,6 +6,8 @@ import UserService from '../../services/user';
 import UserType from '../../enums/user-type';
 import { schemaValidation, authenticate, authorize } from '../middlewares';
 import { ValidationCodeError } from '../../utils/error/business-errors';
+import { controllerPaginationHelper } from '../../utils/tools';
+import { commonFilters, userFilters } from './filter';
 
 const routes = express.Router();
 
@@ -64,6 +66,27 @@ routes.get('/:id',
     try {
       validationResult(req).throw();
       response = await UserService.getById(req.params.id, req.user);
+    } catch (err) {
+      return next(err);
+    }
+
+    return res.status(httpStatus.OK).json(response);
+  });
+
+routes.get('/',
+  authenticate,
+  authorize([UserType.ADMIN, UserType.MEDIC]),
+  async (req, res, next) => {
+    let response;
+
+    try {
+      const searchParameter = {
+        ...controllerPaginationHelper(req),
+        ...commonFilters(req),
+        ...userFilters(req),
+      };
+
+      response = await UserService.getAllWithPagination(searchParameter, req.user);
     } catch (err) {
       return next(err);
     }

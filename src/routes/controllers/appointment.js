@@ -5,6 +5,8 @@ import schemaPackage from '../schema';
 import AppointmentService from '../../services/appointment';
 import UserType from '../../enums/user-type';
 import { schemaValidation, authenticate, authorize } from '../middlewares';
+import { controllerPaginationHelper } from '../../utils/tools';
+import { commonFilters, appointmentFilters } from './filter';
 import { ValidationCodeError } from '../../utils/error/business-errors';
 
 const routes = express.Router();
@@ -51,6 +53,27 @@ routes.get('/:id',
     try {
       validationResult(req).throw();
       response = await AppointmentService.getById(req.params.id, req.user);
+    } catch (err) {
+      return next(err);
+    }
+
+    return res.status(httpStatus.OK).json(response);
+  });
+
+routes.get('/',
+  authenticate,
+  authorize([UserType.ADMIN, UserType.MEDIC]),
+  async (req, res, next) => {
+    let response;
+
+    try {
+      const searchParameter = {
+        ...controllerPaginationHelper(req),
+        ...commonFilters(req),
+        ...appointmentFilters(req),
+      };
+
+      response = await AppointmentService.getAllWithPagination(searchParameter);
     } catch (err) {
       return next(err);
     }

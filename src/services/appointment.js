@@ -7,7 +7,7 @@ import ErrorType from '../enums/error-type';
 import UserType from '../enums/user-type';
 import AppointmentStatus from '../enums/appointment-status';
 import { serviceOrderHelper } from '../utils/tools';
-import CommonSearchParameter from './search-parameters';
+import SearchParameter from './search-parameters';
 
 const UserModel = db.models.User;
 const MedicModel = db.models.Medic;
@@ -102,7 +102,12 @@ export default class AppointmentService {
 
   static async getAllWithPagination(searchParameter) {
     let response = null;
-    const { where } = CommonSearchParameter.createCommonQuery(searchParameter);
+    let where = {};
+
+    const commonQuery = SearchParameter.createCommonQuery(searchParameter);
+    const appointmentQuery = SearchParameter.createAppointmentQuery(searchParameter);
+
+    where = { ...commonQuery.where, ...appointmentQuery.where };
 
     response = await ModelRepository.selectWithPagination(AppointmentModel, {
       where,
