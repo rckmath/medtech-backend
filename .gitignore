@@ -112,3 +112,4 @@ Dockerfile
 .ash_history
 .env-development
 .env-production
+google.json

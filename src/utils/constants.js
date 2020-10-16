@@ -22,4 +22,15 @@ export default class Constants {
     accessTokenLifetime: process.env.AUTH_ACCESS_TOKEN_LIFETIME,
     refreshTokenLifetime: process.env.AUTH_REFRESH_TOKEN_LIFETIME,
   }
+
+  static mailing = {
+    email: process.env.MAILING_EMAIL,
+    alias: process.env.MAILING_ALIAS,
+  }
+
+  static google = {
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    clientRefreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+  }
 }

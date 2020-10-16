@@ -1,4 +1,13 @@
 import crypto from 'crypto';
+import dayjs from 'dayjs';
+
+export function stringReplace(base, params) {
+  Object.keys(params).forEach((opt) => {
+    base = base.replace(new RegExp(`\\{${opt}\\}`, 'g'), params[opt]);
+  });
+
+  return base;
+}
 
 export function sha256(stringToHash) {
   return crypto.createHash('sha256')
@@ -7,17 +16,7 @@ export function sha256(stringToHash) {
 }
 
 export function msToTime(s) {
-  function pad(n, z) {
-    return (`00${n}`).slice(-(z || 2));
-  }
-
-  s = (s - (s % 1000)) / 1000;
-  const secs = s % 60;
-
-  s = (s - secs) / 60;
-  const mins = s % 60;
-
-  return `${pad((s - mins) / 60)}:${pad(mins)}:${pad(secs)}`;
+  return dayjs(s).format('HH:mm:ss');
 }
 
 export function controllerPaginationHelper(req) {
