@@ -110,3 +110,5 @@ Dockerfile
 # Others
 .config/
 .ash_history
+.env-development
+.env-production

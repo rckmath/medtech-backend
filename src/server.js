@@ -8,10 +8,12 @@ import httpStatus from 'http-status';
 import morgan from 'morgan';
 import routes from './routes';
 import ErrorType from './enums/error-type';
+import Constants from './utils/constants';
 
 const app = express();
 
-app.use(morgan('dev'));
+if (Constants.env === 'development') { app.use(morgan('dev')); }
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: '20mb', type: 'application/json' }));
 app.use(compress());
@@ -44,6 +46,8 @@ app.use((err, _req, res, next) => {
       error: { type: err.type, message: err.message, status: err.status },
     });
   } else {
+    if (Constants.env !== 'development') { delete err.stack; }
+
     res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR).json({
       error: {
         type: err.type,
