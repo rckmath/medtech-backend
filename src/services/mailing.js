@@ -3,12 +3,13 @@ import path from 'path';
 import * as fs from 'fs';
 import mjml2html from 'mjml';
 import Mail from '../mechanisms/mailing';
-import { stringReplace } from '../utils/tools';
 import ExtendableError from '../utils/error/extendable';
 import ErrorType from '../enums/error-type';
+import { stringReplace } from '../utils/tools';
+import GoogleAuthService from './google/auth';
 
 const readFile = (filePath) => new Promise((resolve, reject) => {
-  const htmlPath = path.join(__dirname, '../', 'mail-templates/', filePath);
+  const htmlPath = path.join(__dirname, '../', 'templates/', 'mailing/', filePath);
 
   fs.readFile(htmlPath, 'utf8', (err, html) => {
     if (err) { reject(err); }
@@ -23,16 +24,17 @@ export default class MailService {
       let mjml = await readFile('password-recovery.mjml');
 
       mjml = stringReplace(mjml, {
-        userName: user.name,
-        recoveryToken,
+        name: user.name,
+        token: recoveryToken,
         year: new Date().getFullYear(),
       });
 
-      const { html } = await mjml2html(mjml, { minify: true });
+      const { html } = mjml2html(mjml, { minify: true });
+      const access = await GoogleAuthService.OAuth();
 
-      await Mail.send(user.email, 'Recuperação de senha', html);
+      await Mail.send(access, user.email, 'Recuperação de senha', html);
     } catch (err) {
-      throw new ExtendableError(ErrorType.MISC, 'E-mail not sent', httpStatus.INTERNAL_SERVER_ERROR);
+      throw new ExtendableError(ErrorType.MISC, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

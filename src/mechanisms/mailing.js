@@ -1,12 +1,11 @@
 import nodemailer from 'nodemailer';
-import GoogleAuthService from '../services/google/auth';
 import Constants from '../utils/constants';
 
 const getTransporter = (accessToken) => nodemailer.createTransport({
   service: 'gmail',
   auth: {
     type: 'OAuth2',
-    user: Constants.google.email,
+    user: Constants.mailing.email,
     clientId: Constants.google.clientId,
     clientSecret: Constants.google.clientSecret,
     refreshToken: Constants.google.clientRefreshToken,
@@ -15,9 +14,8 @@ const getTransporter = (accessToken) => nodemailer.createTransport({
 });
 
 export default class Mail {
-  static async send(to, subject, html, attachments) {
-    const accessToken = await GoogleAuthService.OAuth();
-    const smtpTransport = getTransporter(accessToken);
+  static async send(access, to, subject, html, attachments) {
+    const smtpTransport = getTransporter(access);
 
     const mailOptions = {
       from: `"${Constants.mailing.alias}" <${Constants.mailing.email}>`,

@@ -1,14 +1,15 @@
 import express from 'express';
 import Constants from '../utils/constants';
-import { msToTime, msToTimeRemake } from '../utils/tools';
+import { msToTime } from '../utils/tools';
 
 const router = express.Router();
 const startedAt = Date.now();
 
 router.get('/status',
-  async (req, res) => res.json({
+  async (_req, res) => res.json({
     env: Constants.env,
-    update: msToTime(Date.now() - startedAt),
+    serverTime: msToTime(Date.now()),
+    uptime: msToTime(Date.now() - startedAt),
   }));
 
 router.use('/user', require('./controllers/user').default);
