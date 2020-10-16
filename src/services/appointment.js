@@ -48,7 +48,7 @@ export default class AppointmentService {
 
     if (actor.userType === UserType.MEDIC) {
       include[0].where.id = actor.medic.id;
-    } else if (actor.uesrType === UserType.PATIENT) {
+    } else if (actor.userType === UserType.PATIENT) {
       include[1].where.id = actor.id;
     }
 

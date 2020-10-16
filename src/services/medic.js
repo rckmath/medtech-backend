@@ -134,14 +134,8 @@ export default class MedicService {
     const userQuery = SearchParameter.createUserQuery(searchParameter);
     const medicQuery = SearchParameter.createMedicQuery(searchParameter);
 
-    where = {
-      ...commonQuery.where,
-      ...medicQuery.where,
-    };
-
-    userWhere = {
-      ...userQuery.where,
-    };
+    where = { ...commonQuery.where, ...medicQuery.where };
+    userWhere = { ...userQuery.where };
 
     response = await ModelRepository.selectWithPagination(MedicModel, {
       where,
