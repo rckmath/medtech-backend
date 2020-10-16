@@ -24,11 +24,7 @@ export default class AuthService {
     });
 
     if (!user) {
-      throw new ExtendableError(
-        ErrorType.UNAUTHORIZED,
-        AuthCodeError.BAD_CREDENTIALS,
-        httpStatus.UNAUTHORIZED,
-      );
+      throw new ExtendableError(ErrorType.UNAUTHORIZED, AuthCodeError.BAD_CREDENTIALS, httpStatus.UNAUTHORIZED);
     }
 
     const response = {
@@ -63,10 +59,7 @@ export default class AuthService {
 
     const user = await UserService.getById(verifiedToken.id);
 
-    return {
-      user: user.toJSON(),
-      token,
-    };
+    return { user: user.toJSON(), token };
   }
 
   static async logout() {

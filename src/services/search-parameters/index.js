@@ -102,8 +102,6 @@ export default class SearchParameter {
   static createMedicQuery(searchParameter) {
     const where = {};
 
-    console.log(searchParameter);
-
     if (searchParameter.regUf) {
       where.regUf = { [Op.iLike]: `%${searchParameter.regUf}%` };
     }

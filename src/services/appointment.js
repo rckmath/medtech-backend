@@ -60,7 +60,11 @@ export default class AppointmentService {
     return appointments;
   }
 
-  static async getSimpleById(id) {
+  static async getSimpleById(id, actor) {
+    const where = { id, deletedAt: null };
+
+    if (actor.userType === UserType.MEDIC) { where.medicId = actor.medic.id; }
+
     const appointment = await ModelRepository.selectOne(AppointmentModel, { where: { id, deletedAt: null } });
 
     if (!appointment) {
@@ -126,18 +130,16 @@ export default class AppointmentService {
   }
 
   static async updateById(id, appointment, actor) {
+    await AppointmentService.getSimpleById(id, actor);
     await ModelRepository.updateById(AppointmentModel, id, {
       status: appointment.status,
       appointmentAt: appointment.at,
-
       updatedBy: actor && actor.id,
     });
   }
 
   static async deleteById(id, actor) {
-    await Promise.all([
-      AppointmentService.getSimpleById(id),
-      ModelRepository.deleteById(AppointmentModel, id, actor && actor.id),
-    ]);
+    await AppointmentService.getSimpleById(id);
+    await ModelRepository.deleteById(AppointmentModel, id, actor && actor.id);
   }
 }
