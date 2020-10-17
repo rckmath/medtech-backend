@@ -126,12 +126,13 @@ routes.post('/recovery',
   });
 
 routes.post('/recovery/:token',
+  body('email').isEmail().withMessage(ValidationCodeError.INVALID_EMAIL),
   param('token').isAlphanumeric().isLength({ min: 6, max: 6 }).withMessage(ValidationCodeError.INVALID_TOKEN),
   async (req, res, next) => {
     let response;
 
     try {
-      response = await UserService.validateRecoveryToken(req.params.token);
+      response = await UserService.validateRecoveryToken(req.body.email, req.params.token);
     } catch (err) {
       return next(err);
     }
