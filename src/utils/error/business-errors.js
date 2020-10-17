@@ -1,6 +1,10 @@
 const ValidationCodeError = {
   INVALID_ID: 'invalid_id',
   INVALID_PARAMS: 'invalid_params',
+  INVALID_EMAIL: 'invalid_email',
+  INVALID_TOKEN: 'invalid_token',
+  BAD_PASSWORD: 'bad_password',
+  OLD_AND_NEW_PASSWORD_ARE_THE_SAME: 'old_and_new_password_are_the_same',
 };
 const UserCodeError = {
   USER_NOT_FOUND: 'user_not_found',

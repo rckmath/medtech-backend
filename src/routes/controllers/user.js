@@ -1,6 +1,6 @@
 import express from 'express';
 import httpStatus from 'http-status';
-import { param, validationResult } from 'express-validator';
+import { param, body, validationResult } from 'express-validator';
 import schemaPackage from '../schema';
 import UserService from '../../services/user';
 import UserType from '../../enums/user-type';
@@ -104,6 +104,48 @@ routes.put('/:id',
 
     try {
       response = await UserService.updateById(req.params.id, req.body, req.user);
+    } catch (err) {
+      return next(err);
+    }
+
+    return res.status(httpStatus.OK).json(response);
+  });
+
+routes.post('/recovery',
+  body('email').isEmail().withMessage(ValidationCodeError.INVALID_EMAIL),
+  async (req, res, next) => {
+    let response;
+
+    try {
+      response = await UserService.generateRecoveryToken(req.body.email);
+    } catch (err) {
+      return next(err);
+    }
+
+    return res.status(httpStatus.OK).json(response);
+  });
+
+routes.post('/recovery/:token',
+  param('token').isAlphanumeric().isLength({ min: 6, max: 6 }).withMessage(ValidationCodeError.INVALID_TOKEN),
+  async (req, res, next) => {
+    let response;
+
+    try {
+      response = await UserService.validateRecoveryToken(req.params.token);
+    } catch (err) {
+      return next(err);
+    }
+
+    return res.status(httpStatus.OK).json(response);
+  });
+
+routes.put('/recovery',
+  body('password').isEmail().withMessage(ValidationCodeError.INVALID_EMAIL),
+  async (req, res, next) => {
+    let response;
+
+    try {
+      response = await UserService(req.body.password);
     } catch (err) {
       return next(err);
     }
