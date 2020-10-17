@@ -34,7 +34,7 @@ export default class MailService {
 
       await Mail.send(access, user.email, 'Recuperação de senha', html);
     } catch (err) {
-      throw new ExtendableError(ErrorType.MISC, err.message, httpStatus.INTERNAL_SERVER_ERROR);
+      throw new ExtendableError(ErrorType.MAIL, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }
