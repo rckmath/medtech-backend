@@ -6,8 +6,9 @@ const router = express.Router();
 const startedAt = Date.now();
 
 router.get('/status',
-  async (req, res) => res.json({
+  async (_req, res) => res.json({
     env: Constants.env,
+    serverTime: msToTime(Date.now()),
     uptime: msToTime(Date.now() - startedAt),
   }));
 
