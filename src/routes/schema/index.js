@@ -25,15 +25,6 @@ schemaPackage.user = {
       },
       errorMessage: 'invalid_birthday',
     },
-    profilePhoto: {
-      in: 'body',
-      custom: {
-        // eslint-disable-next-line max-len
-        options: (profilePhoto) => /^data:image\/(?:png|jpeg|jpg)(?:;charset=utf-8)?;base64,(?:[A-Za-z0-9]|[+/])+={0,2}/g.test(profilePhoto),
-      },
-      optional: true,
-      errorMessage: 'invalid_photo_file',
-    },
     gender: {
       in: 'body',
       custom: {

@@ -17,20 +17,20 @@ export default class S3Amazon {
     let response = null;
 
     try {
-      const [, extension] = file.name.split('.');
+      const [, extension] = options.contentType.split('/');
 
       const uploadParams = {
-        Key: `${options.user.id}.${extension}`,
+        Key: `${file.id}.${extension}`,
         Body: file.buffer,
         Bucket: bucket,
-        ACL: options.isPrivate ? 'private' : 'public-read',
         Expires: options.expiresAt,
+        ContentType: options.contentType,
       };
 
       await S3.upload(uploadParams).promise();
 
       const getParams = {
-        Key: `${options.user.id}.${extension}`,
+        Key: `${file.id}.${extension}`,
         Bucket: bucket,
         Expires: dayjs(options.expiresAt).diff(dayjs(), 's'),
       };
