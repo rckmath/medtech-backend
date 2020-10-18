@@ -117,6 +117,7 @@ routes.post('/recovery',
     let response;
 
     try {
+      validationResult(req).throw();
       response = await UserService.generateRecoveryToken(req.body.email);
     } catch (err) {
       return next(err);
@@ -126,12 +127,13 @@ routes.post('/recovery',
   });
 
 routes.post('/recovery/:token',
-  body('email').isEmail().withMessage(ValidationCodeError.INVALID_EMAIL),
   param('token').isAlphanumeric().isLength({ min: 6, max: 6 }).withMessage(ValidationCodeError.INVALID_TOKEN),
+  body('email').isEmail().withMessage(ValidationCodeError.INVALID_EMAIL),
   async (req, res, next) => {
     let response;
 
     try {
+      validationResult(req).throw();
       response = await UserService.validateRecoveryToken(req.body.email, req.params.token);
     } catch (err) {
       return next(err);
@@ -140,13 +142,16 @@ routes.post('/recovery/:token',
     return res.status(httpStatus.OK).json(response);
   });
 
-routes.put('/recovery',
-  body('password').isEmail().withMessage(ValidationCodeError.INVALID_EMAIL),
+routes.put('/recovery/:id',
+  param('id').isUUID().withMessage(ValidationCodeError.INVALID_ID),
+  body('password').isString().isLength({ min: 8 }).withMessage(ValidationCodeError.INVALID_PASSWORD),
+  body('token').isString().isLength({ min: 6, max: 6 }).withMessage(ValidationCodeError.INVALID_TOKEN),
   async (req, res, next) => {
     let response;
 
     try {
-      response = await UserService(req.body.password);
+      validationResult(req).throw();
+      response = await UserService.recoveryPassword(req.params.id, req.body);
     } catch (err) {
       return next(err);
     }

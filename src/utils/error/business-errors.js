@@ -3,6 +3,7 @@ const ValidationCodeError = {
   INVALID_PARAMS: 'invalid_params',
   INVALID_EMAIL: 'invalid_email',
   INVALID_TOKEN: 'invalid_token',
+  INVALID_PASSWORD: 'invalid_password',
   BAD_PASSWORD: 'bad_password',
   OLD_AND_NEW_PASSWORD_ARE_THE_SAME: 'old_and_new_password_are_the_same',
 };

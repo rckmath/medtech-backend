@@ -167,11 +167,13 @@ export default class UserService {
     });
 
     await MailService.sendRecoveryToken(user, recoveryToken);
+
+    return { email };
   }
 
   static async validateRecoveryToken(email, recoveryToken) {
     const user = await ModelRepository.selectOne(UserModel, {
-      attributes: ['id'],
+      attributes: ['id', 'recoveryToken'],
       where: {
         email,
         recoveryToken,
@@ -183,13 +185,15 @@ export default class UserService {
     if (!user) {
       throw new ExtendableError(ErrorType.BUSINESS, ValidationCodeError.INVALID_TOKEN, httpStatus.BAD_REQUEST);
     }
+
+    return user;
   }
 
-  static async recoveryPassword(email, recoveryToken, password) {
+  static async recoveryPassword(id, { token: recoveryToken, password }) {
     const user = await ModelRepository.selectOne(UserModel, {
       attributes: ['id'],
       where: {
-        email,
+        id,
         recoveryToken,
         recoveryTokenExpiresAt: { [Op.gt]: dayjs().toDate() },
         deletedAt: null,
@@ -197,7 +201,7 @@ export default class UserService {
     });
 
     if (!user) {
-      await ModelRepository.updateById(UserModel, user.id, {
+      await ModelRepository.updateById(UserModel, id, {
         recoveryToken: null,
         recoveryTokenExpiresAt: null,
       });
@@ -205,7 +209,9 @@ export default class UserService {
       throw new ExtendableError(ErrorType.BUSINESS, UserCodeError.USER_NOT_FOUND, httpStatus.BAD_REQUEST);
     }
 
-    await ModelRepository.updateById(UserModel, user.id, {
+    password = sha256(password);
+
+    await ModelRepository.updateById(UserModel, id, {
       password,
       recoveryToken: null,
       recoveryTokenExpiresAt: null,
