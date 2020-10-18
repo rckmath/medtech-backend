@@ -5,6 +5,7 @@ const ErrorType = {
   UNAUTHORIZED: 'unauthorized_error',
   CLIENT_ERROR: 'client_error',
   MAIL: 'mail_error',
+  AWS: 'aws_error',
 };
 
 export default ErrorType;
