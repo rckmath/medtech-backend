@@ -63,7 +63,7 @@ export default class UserService {
       return MedicService.create(user, actor);
     }
 
-    return ModelRepository.create(UserModel, {
+    const response = await ModelRepository.create(UserModel, {
       name: user.name,
       cpf: user.cpf,
       email: user.email,
@@ -77,6 +77,9 @@ export default class UserService {
       createdBy: actor && actor.id,
     });
 
+    MailService.sendRegister(response);
+
+    return response;
   }
 
   static async getSimpleById(id) {
@@ -137,6 +140,7 @@ export default class UserService {
 
     await ModelRepository.updateById(UserModel, id, {
       userType: user.type,
+      genderType: user.genderType,
 
       name: user.name,
       email: user.email,

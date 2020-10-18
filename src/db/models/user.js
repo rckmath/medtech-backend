@@ -5,8 +5,8 @@ export default (sequelize, DataTypes) => {
     },
 
     name: { type: DataTypes.STRING, field: 'str_name' },
-    cpf: { type: DataTypes.STRING, field: 'str_cpf', unique: true },
-    email: { type: DataTypes.STRING, field: 'str_email', unique: true },
+    cpf: { type: DataTypes.STRING, field: 'str_cpf' },
+    email: { type: DataTypes.STRING, field: 'str_email' },
     password: { type: DataTypes.STRING, field: 'str_password' },
     phone: { type: DataTypes.STRING, field: 'str_phone' },
     birthday: { type: DataTypes.DATE, field: 'dt_birthday' },
