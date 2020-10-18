@@ -1,14 +1,17 @@
 import { Op } from 'sequelize';
+import crypto from 'crypto';
+import dayjs from 'dayjs';
 import httpStatus from 'http-status';
 import ModelRepository from '../db/repository';
 import db from '../db/database';
 import ExtendableError from '../utils/error/extendable';
-import { UserCodeError } from '../utils/error/business-errors';
+import { UserCodeError, ValidationCodeError } from '../utils/error/business-errors';
 import ErrorType from '../enums/error-type';
 import { serviceOrderHelper, sha256 } from '../utils/tools';
 import UserType from '../enums/user-type';
 import MedicService from './medic';
 import SearchParameter from './search-parameters';
+import MailService from './mailing';
 
 const UserModel = db.models.User;
 const MedicModel = db.models.Medic;
@@ -148,6 +151,91 @@ export default class UserService {
 
       updatedBy: actor && actor.id,
     });
+  }
+
+  static async generateRecoveryToken(email) {
+    const user = await ModelRepository.selectOne(UserModel, { where: { email, deletedAt: null } });
+
+    if (!user) {
+      throw new ExtendableError(ErrorType.BUSINESS, UserCodeError.USER_NOT_FOUND, httpStatus.BAD_REQUEST);
+    }
+
+    const recoveryToken = crypto.randomBytes(3).toString('hex').toUpperCase();
+
+    await ModelRepository.updateById(UserModel, user.id, {
+      recoveryToken, recoveryTokenExpiresAt: dayjs().add(30, 'minute').toDate(),
+    });
+
+    await MailService.sendRecoveryToken(user, recoveryToken);
+
+    return { email };
+  }
+
+  static async validateRecoveryToken(email, recoveryToken) {
+    const user = await ModelRepository.selectOne(UserModel, {
+      attributes: ['id', 'recoveryToken'],
+      where: {
+        email,
+        recoveryToken,
+        recoveryTokenExpiresAt: { [Op.gt]: dayjs().toDate() },
+        deletedAt: null,
+      },
+    });
+
+    if (!user) {
+      throw new ExtendableError(ErrorType.BUSINESS, ValidationCodeError.INVALID_TOKEN, httpStatus.BAD_REQUEST);
+    }
+
+    return user;
+  }
+
+  static async recoveryPassword(id, { token: recoveryToken, password }) {
+    const user = await ModelRepository.selectOne(UserModel, {
+      attributes: ['id'],
+      where: {
+        id,
+        recoveryToken,
+        recoveryTokenExpiresAt: { [Op.gt]: dayjs().toDate() },
+        deletedAt: null,
+      },
+    });
+
+    if (!user) {
+      await ModelRepository.updateById(UserModel, id, {
+        recoveryToken: null,
+        recoveryTokenExpiresAt: null,
+      });
+
+      throw new ExtendableError(ErrorType.BUSINESS, UserCodeError.USER_NOT_FOUND, httpStatus.BAD_REQUEST);
+    }
+
+    password = sha256(password);
+
+    await ModelRepository.updateById(UserModel, id, {
+      password,
+      recoveryToken: null,
+      recoveryTokenExpiresAt: null,
+    });
+  }
+
+  static async updatePassword(id, { oldPassword, newPassword }) {
+    if (oldPassword === newPassword) {
+      throw new ExtendableError(
+        ErrorType.BUSINESS,
+        ValidationCodeError.OLD_AND_NEW_PASSWORD_ARE_THE_SAME,
+        httpStatus.BAD_REQUEST,
+      );
+    }
+
+    const user = await ModelRepository.selectOne(UserModel, {
+      where: { id, password: sha256(oldPassword), deletedAt: null },
+    });
+
+    if (!user) {
+      throw new ExtendableError(ErrorType.BUSINESS, ValidationCodeError.BAD_PASSWORD, httpStatus.BAD_REQUEST);
+    }
+
+    await ModelRepository.updateById(UserModel, id, { password: sha256(newPassword), updatedBy: id });
   }
 
   static async deleteById(id, actor) {

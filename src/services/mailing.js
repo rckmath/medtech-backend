@@ -19,7 +19,7 @@ const readFile = (filePath) => new Promise((resolve, reject) => {
 });
 
 export default class MailService {
-  static async sendRecoveryMail(user, recoveryToken) {
+  static async sendRecoveryToken(user, recoveryToken) {
     try {
       let mjml = await readFile('password-recovery.mjml');
 
