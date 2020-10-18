@@ -8,6 +8,7 @@ import UserType from '../enums/user-type';
 import AppointmentStatus from '../enums/appointment-status';
 import { serviceOrderHelper } from '../utils/tools';
 import SearchParameter from './search-parameters';
+import MailService from './mailing';
 
 const UserModel = db.models.User;
 const MedicModel = db.models.Medic;
@@ -15,7 +16,7 @@ const AppointmentModel = db.models.Appointment;
 
 export default class AppointmentService {
   static async create(appointment, actor) {
-    return ModelRepository.create(AppointmentModel, {
+    const response = await ModelRepository.create(AppointmentModel, {
       medicId: actor.medic.id,
       patientId: appointment.patientId,
 
@@ -24,6 +25,13 @@ export default class AppointmentService {
 
       createdBy: actor && actor.id,
     });
+
+    if (response) {
+      const mailData = await AppointmentService.getById(response.id, actor);
+      MailService.sendAppointment(mailData);
+    }
+
+    return response;
   }
 
   static async getAllMyAppointments(actor) {
@@ -96,7 +104,7 @@ export default class AppointmentService {
           model: UserModel,
           as: 'user',
           where: { deletedAt: null },
-          attributes: ['name', 'email', 'phone'],
+          attributes: ['name', 'email', 'phone', 'genderType'],
         },
       }],
     });

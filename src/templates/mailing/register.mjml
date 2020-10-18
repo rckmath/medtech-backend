@@ -13,20 +13,19 @@
     <mj-section background-color="#26267F">
       <mj-column>
         <mj-image align="center" width="161px" src="https://i.imgur.com/nA1Qwrc.png" href=""/>
-      </mj-column>
+        </mj-column>
     </mj-section>
-    <!-- Main body -->
+    <!-- Main content  -->
     <mj-section padding-top="5%">
       <mj-column width="450px">
-        <mj-text font-weight="bold" font-size="20px" color="#26267F">Recuperação de senha</mj-text>
-        <mj-text color="#525252">Olá, {name}!</mj-text>
-        <mj-text padding-top="0" align="justify" color="#525252">Seu token para a recuperação de senha:</mj-text>
-        <mj-text font-size="20px" padding-top="20px" color="#26267F" align="left" font-weight="bold" background-color="#26267F">{token}</mj-text>
-        <mj-text padding-top="20px" align="justify" color="#525252">Nota: o tempo de expiração do token é de 30 minutos. Em caso de problemas, entrar em contato com o suporte.</mj-text>
+        <mj-text font-weight="bold" font-size="20px" color="#26267F">Registrado com sucesso</mj-text>
+        <mj-text color="#525252">Olá, {name}</mj-text>
+        <mj-text align="justify" color="#525252">Seja bem-vindo a plataforma MedTech, esperamos que goste de nossos serviços. Dúvidas, problemas ou suporte, não hesite em nos contatar. ;)</mj-text>
+        <mj-button href="#" padding-top="20px" align="left" font-weight="bold" background-color="#26267F">Acesse o portal</mj-button>
       </mj-column>
     </mj-section>
     <!-- Signature -->
-    <mj-section>
+    <mj-section padding-top="1%" background-color="#fff">
       <mj-column width="450px">
         <mj-text color="#26267F">Equipe MedTech</mj-text>
         <mj-text padding-top="0" color="#525252">Esta é uma mensagem automática, por favor não responda.</mj-text>
@@ -36,9 +35,8 @@
     <mj-raw>
       <!-- Footer -->
     </mj-raw>
-    <mj-section>
+    <mj-section padding-top="0" background-color="#fff">
       <mj-column>
-        <mj-text font-size="11px" padding-bottom="0.5%" color="#26267F" align="center">Caso não tenha realizado esta solicitação, ignore este e-mail e jamais informe suas credenciais para ninguém!</mj-text>
         <mj-text padding-top="0" color="#525252" font-size="11px" align="center">Copyright {year} © MedTech - Todos os direitos reservados.</mj-text>
       </mj-column>
     </mj-section>

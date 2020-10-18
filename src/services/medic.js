@@ -8,6 +8,7 @@ import ErrorType from '../enums/error-type';
 import { serviceOrderHelper, sha256 } from '../utils/tools';
 import UserType from '../enums/user-type';
 import SearchParameter from './search-parameters';
+import MailService from './mailing';
 
 const MedicModel = db.models.Medic;
 const UserModel = db.models.User;
@@ -96,6 +97,8 @@ export default class MedicService {
       response = { ...response.toJSON(), medic: createdMedic.toJSON() };
 
       await transaction.commit();
+
+      MailService.sendRegister(response);
     } catch (err) {
       if (transaction) { await transaction.rollback(); }
 
