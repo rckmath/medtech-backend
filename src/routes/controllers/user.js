@@ -94,6 +94,24 @@ routes.get('/',
     return res.status(httpStatus.OK).json(response);
   });
 
+routes.put('/update-password',
+  authenticate,
+  authorize([UserType.ADMIN, UserType.MEDIC, UserType.PATIENT]),
+  body('oldPassword').isString().isLength({ min: 8 }).withMessage(ValidationCodeError.INVALID_PASSWORD),
+  body('newPassword').isString().isLength({ min: 8 }).withMessage(ValidationCodeError.INVALID_PASSWORD),
+  async (req, res, next) => {
+    let response;
+
+    try {
+      validationResult(req).throw();
+      response = await UserService.updatePassword(req.user.id, req.body);
+    } catch (err) {
+      return next(err);
+    }
+
+    return res.status(httpStatus.OK).json(response);
+  });
+
 routes.put('/:id',
   authenticate,
   authorize([UserType.ADMIN, UserType.MEDIC, UserType.PATIENT]),
