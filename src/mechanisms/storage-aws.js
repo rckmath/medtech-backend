@@ -42,4 +42,23 @@ export default class S3Amazon {
 
     return response;
   }
+
+  static async getFile(bucket, fileName, options) {
+    let response = null;
+
+    try {
+      const [, extension] = options.contentType.split('/');
+
+      const getParams = {
+        Key: fileName,
+        Bucket: bucket,
+      };
+
+      response = await S3.getObject('getObject', getParams).promise();
+    } catch (err) {
+      throw new ExtendableError(ErrorType.AWS, err.message, httpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return response;
+  }
 }
