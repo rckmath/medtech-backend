@@ -102,3 +102,14 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Docker files
+docker-compose.yml
+Dockerfile
+
+# Others
+.config/
+.ash_history
+.env-development
+.env-production
+google.json

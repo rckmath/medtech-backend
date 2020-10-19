@@ -1,0 +1,53 @@
+{
+  "extends": "airbnb",
+  "parser": "babel-eslint",
+  "rules": {
+    "no-param-reassign": "off",
+    "max-len": [
+      "error",
+      120
+    ],
+    "linebreak-style": "off",
+    "indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "padding-line-between-statements": [
+      "error",
+      {
+        "blankLine": "always",
+        "prev": [
+          "if",
+          "for",
+          "while",
+          "block-like",
+          "block"
+        ],
+        "next": "*"
+      },
+      {
+        "blankLine": "always",
+        "prev": "*",
+        "next": [
+          "if",
+          "for",
+          "while",
+          "block-like",
+          "block"
+        ]
+      }
+    ],
+    "padded-blocks": [
+      "error",
+      {
+        "switches": "always"
+      }
+    ]
+  },
+  "plugins": [
+    "babel"
+  ]
+}

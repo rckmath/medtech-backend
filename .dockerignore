@@ -1,0 +1,15 @@
+# ignore .git and .cache folders
+.git
+.cache
+
+logs
+*.log
+
+# Compiled binary addons (http://nodejs.org/api/addons.html)
+build/
+node_modules
+
+## Directory-based project format:
+.idea/
+.vscode/
+.DS_Store
