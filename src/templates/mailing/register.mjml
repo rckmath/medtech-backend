@@ -20,7 +20,7 @@
       <mj-column width="450px">
         <mj-text font-weight="bold" font-size="20px" color="#26267F">Registrado com sucesso</mj-text>
         <mj-text color="#525252">Olá, {name}</mj-text>
-        <mj-text align="justify" color="#525252">Seja bem-vindo a plataforma MedTech, esperamos que goste de nossos serviços. Dúvidas, problemas ou suporte, não hesite em nos contatar. ;)</mj-text>
+        <mj-text align="justify" color="#525252">Seja bem-vind{g} a plataforma MedTech, esperamos que goste de nossos serviços. Dúvidas, problemas ou suporte, não hesite em nos contatar. ;)</mj-text>
         <mj-button href="#" padding-top="20px" align="left" font-weight="bold" background-color="#26267F">Acesse o portal</mj-button>
       </mj-column>
     </mj-section>

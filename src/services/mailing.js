@@ -34,7 +34,7 @@ export default class MailService {
       const { html } = mjml2html(mjml, { minify: true });
       const access = await GoogleAuthService.OAuth();
 
-      await Mail.send(access, user.email, 'Solicitação de recuperação de senha', html);
+      await Mail.send(access, user.email, `${user.name}, sua solicitação de recuperação de senha`, html);
     } catch (err) {
       throw new ExtendableError(ErrorType.MAIL, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -46,15 +46,20 @@ export default class MailService {
 
       const [firstName] = user.name.split(' ');
 
+      let g = 'o';
+
+      if (user.genderType === GenderType.FEMALE) { g = 'a'; }
+
       mjml = stringReplace(mjml, {
         name: firstName,
+        g,
         year: new Date().getFullYear(),
       });
 
       const { html } = mjml2html(mjml, { minify: true });
       const access = await GoogleAuthService.OAuth();
 
-      await Mail.send(access, user.email, `${firstName}, seja bem-vindo a MedTech!`, html);
+      await Mail.send(access, user.email, `${firstName}, seja bem-vind${g} à MedTech!`, html);
     } catch (err) {
       throw new ExtendableError(ErrorType.MAIL, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
