@@ -10,7 +10,7 @@ export default (sequelize, DataTypes) => {
     password: { type: DataTypes.STRING, field: 'str_password' },
     phone: { type: DataTypes.STRING, field: 'str_phone' },
     birthday: { type: DataTypes.DATE, field: 'dt_birthday' },
-    profilePhotoUrl: { type: DataTypes.STRING, field: 'str_profile_photo_url' },
+    profilePhotoUrl: { type: DataTypes.TEXT, field: 'str_profile_photo_url' },
 
     genderType: { type: DataTypes.INTEGER, field: 'int_gender_type' },
     userType: { type: DataTypes.INTEGER, field: 'int_user_type' },

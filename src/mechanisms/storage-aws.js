@@ -23,6 +23,7 @@ export default class S3Amazon {
         Key: `${file.id}.${extension}`,
         Body: file.buffer,
         Bucket: bucket,
+        ACL: options.privateFile ? 'private' : 'public-read',
         Expires: options.expiresAt,
         ContentType: options.contentType,
       };
@@ -36,6 +37,8 @@ export default class S3Amazon {
       };
 
       response = await S3.getSignedUrlPromise('getObject', getParams);
+
+      [response] = response.split('?');
     } catch (err) {
       throw new ExtendableError(ErrorType.AWS, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -43,18 +46,16 @@ export default class S3Amazon {
     return response;
   }
 
-  static async getFile(bucket, fileName, options) {
+  static async getFile(bucket, fileName) {
     let response = null;
 
     try {
-      const [, extension] = options.contentType.split('/');
-
-      const getParams = {
+      const params = {
         Key: fileName,
         Bucket: bucket,
       };
 
-      response = await S3.getObject('getObject', getParams).promise();
+      response = await S3.getObject(params).promise();
     } catch (err) {
       throw new ExtendableError(ErrorType.AWS, err.message, httpStatus.INTERNAL_SERVER_ERROR);
     }
