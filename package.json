@@ -6,8 +6,8 @@
   "author": "ericklopes02@gmail.com",
   "license": "CC0-1.0",
   "scripts": {
-    "env:dev": "copy .env-development .env",
-    "env:prod": "copy .env-production .env",
+    "env:dev": "cp .env-development .env",
+    "env:prod": "cp .env-production .env",
     "build:dev": "yarn env:dev & docker-compose build",
     "build:prod": "yarn env:prod & docker-compose build",
     "docker:dev": "docker-compose --env-file .env-development up",
