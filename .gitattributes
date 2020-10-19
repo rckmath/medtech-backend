@@ -1,0 +1,4 @@
+* text eol=lf
+*.js    eol=lf
+*.json  eol=lf
+/.git/* text eol=crlf
