@@ -4,11 +4,13 @@ import dayjs from 'dayjs';
 import httpStatus from 'http-status';
 import ModelRepository from '../db/repository';
 import db from '../db/database';
+import Constants from '../utils/constants';
 import ExtendableError from '../utils/error/extendable';
 import { UserCodeError, ValidationCodeError } from '../utils/error/business-errors';
 import ErrorType from '../enums/error-type';
-import { serviceOrderHelper, sha256 } from '../utils/tools';
 import UserType from '../enums/user-type';
+import { serviceOrderHelper, sha256 } from '../utils/tools';
+import AWSMechanism from '../mechanisms/storage-aws';
 import MedicService from './medic';
 import SearchParameter from './search-parameters';
 import MailService from './mailing';
@@ -138,6 +140,20 @@ export default class UserService {
       }
     }
 
+    let photoUrl;
+
+    if (user.profilePhoto) {
+      const buffer = Buffer.from(user.profilePhoto.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+      const [dataType] = user.profilePhoto.split(';');
+      const [, contentType] = dataType.split(':');
+
+      photoUrl = await AWSMechanism.uploadBuffer(
+        `${Constants.aws.bucket}/profile-photos`,
+        { buffer, id },
+        { contentType },
+      );
+    }
+
     await ModelRepository.updateById(UserModel, id, {
       userType: user.type,
       genderType: user.genderType,
@@ -147,7 +163,7 @@ export default class UserService {
       cpf: user.cpf,
       phone: user.phone,
       birthday: user.birthday,
-      profilePhotoUrl: user.profilePhotoUrl,
+      profilePhotoUrl: photoUrl || undefined,
       recoveryToken: user.recoveryToken,
       recoveryTokenExpiresAt: user.recoveryTokenExpiresAt,
 
