@@ -25,7 +25,7 @@ MedTech is an idea of a smart medical clinic appointment management system where
 - Create, read, update and soft delete users (admin, patient and medic)
 - Create, read, update and soft delete appointments
 - AWS S3 Bucket Integrations to user profile photos
-- Mailing ready system with Google OAuth2 (only Gmail)
+- Mailing ready system (only Gmail) with Google OAuth2
 - Docker Compose ready project (see [Docker](#docker) section)
 - MVC based project
 
@@ -42,12 +42,12 @@ MedTech is an idea of a smart medical clinic appointment management system where
 
 ### Instructions
 
-With all pre-requisites configured, the next step is to follow these instructions:
+Done with the pre-requisites, the next step is to follow these instructions:
 
 1. Clone the repository
 2. Open the terminal at the project root folder and type "yarn" to install all dependencies
-3. Create a file named as ".env-development". We will start using a development environment.
-4. Use the following code at the created file:
+3. Create a file named as ".env-development" at the root of the project. We will start using a development environment
+4. Use the following code in the created file:
 
 ```env
 PORT=YOUR_PREFERRED_PORT_NUMBER
@@ -79,6 +79,19 @@ AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET_ACCESS_KEY
 AWS_REGION=YOUR_AWS_REGION
 AWS_BUCKET_NAME=YOUR_AWS_BUCKET
 ```
+
+For every environment variable you need to substitute with your **own configured data**.
+
+5. With setup done, you just need to test running **yarn env:dev** and **yarn start** at the terminal
+6. If everything's OK, you should see a result like the image below:
+
+![Running](https://i.imgur.com/jSMGETP.png)
+
+7. You could test the server status through **your_domain/api/status**, which returns a JSON with basic information and the terminal should show a log like `GET /api/status 200 1.152 ms`.
+8. Have fun! :)
+
+To change the environment, just create a file named .env-production and use the corresponding scripts.
+You are also able to use Docker on the entire process, go to the section below.
 
 ## Docker
 
