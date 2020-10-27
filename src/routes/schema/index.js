@@ -120,27 +120,49 @@ schemaPackage.medic = {
 };
 
 schemaPackage.auth = {
-  signin: {
+  signIn: {
     login: {
       in: 'body',
+      isString: true,
+      notEmpty: true,
       custom: {
-        options: (login) => validator.isEmail(login) || /^[0-9]{11}/g.test(login),
-      },
-      customSanitizer: {
-        options: (login) => login && login.toLowerCase(),
+        options: (login) => /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}/g.test(login) || /^[0-9]{11}/g.test(login),
       },
       errorMessage: 'invalid_login',
     },
-    password: passwordValidation,
+    password: {
+      in: 'body',
+      isString: true,
+      notEmpty: true,
+      errorMessage: 'invalid_password',
+    },
   },
 };
 
 schemaPackage.appointment = {
   create: {
-
+    patientId: {
+      in: 'body',
+      isUUID: true,
+      errorMessage: 'invalid_patient_id',
+    },
+    at: {
+      in: 'body',
+      custom: {
+        options: (date) => dayjs(date, 'YYYY-MM-DDTHH:mm:ss').isValid(),
+      },
+      errorMessage: 'invalid_appointment_date',
+    },
   },
   update: {
-
+    at: {
+      in: 'body',
+      custom: {
+        options: (date) => dayjs(date, 'YYYY-MM-DDTHH:mm:ss').isValid(),
+      },
+      optional: true,
+      errorMessage: 'invalid_appointment_date',
+    },
   },
 };
 
