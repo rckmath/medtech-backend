@@ -14,6 +14,8 @@ const UserModel = db.models.User;
 
 export default class AuthService {
   static async login(login, password) {
+    login = login.toLowerCase();
+
     const user = await ModelRepository.selectOne(UserModel, {
       where: {
         [Op.or]: [{ email: login }, { cpf: login }],

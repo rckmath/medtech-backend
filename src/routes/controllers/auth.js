@@ -8,7 +8,7 @@ import UserType from '../../enums/user-type';
 const routes = express.Router();
 
 routes.post('/',
-  schemaValidation(schemaPackage.auth.signin),
+  schemaValidation(schemaPackage.auth.signIn),
   async (req, res, next) => {
     let response;
 
