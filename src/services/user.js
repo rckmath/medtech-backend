@@ -6,7 +6,7 @@ import ModelRepository from '../db/repository';
 import db from '../db/database';
 import Constants from '../utils/constants';
 import ExtendableError from '../utils/error/extendable';
-import { UserCodeError, ValidationCodeError } from '../utils/error/business-errors';
+import { UserCodeError, ValidationCodeError, AuthCodeError } from '../utils/error/business-errors';
 import ErrorType from '../enums/error-type';
 import UserType from '../enums/user-type';
 import { serviceOrderHelper, sha256 } from '../utils/tools';
@@ -136,7 +136,7 @@ export default class UserService {
   static async updateById(id, user, actor) {
     if (actor.userType !== UserType.ADMIN) {
       if (user.userType || user.cpf || user.email || user.name) {
-        throw new ExtendableError(ErrorType.FORBIDDEN, 'Permission denied.', httpStatus.FORBIDDEN);
+        throw new ExtendableError(ErrorType.FORBIDDEN, AuthCodeError.ACCESS_NOT_ALLOWED, httpStatus.FORBIDDEN);
       }
     }
 
