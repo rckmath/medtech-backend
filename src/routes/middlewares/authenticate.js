@@ -1,11 +1,12 @@
 import httpStatus from 'http-status';
 import ExtendableError from '../../utils/error/extendable';
+import { AuthCodeError } from '../../utils/error/business-errors';
 import AuthService from '../../services/auth';
 import ErrorType from '../../enums/error-type';
 
 const throwError = () => {
   throw new ExtendableError(
-    ErrorType.UNAUTHORIZED, 'Authentication failed!', httpStatus.UNAUTHORIZED,
+    ErrorType.UNAUTHORIZED, AuthCodeError.AUTHENTICATION_FAILED, httpStatus.UNAUTHORIZED,
   );
 };
 
