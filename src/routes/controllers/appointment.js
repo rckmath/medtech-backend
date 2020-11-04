@@ -34,8 +34,13 @@ routes.get('/my',
     let response;
 
     try {
-      validationResult(req).throw();
-      response = await AppointmentService.getAllMyAppointments(req.user);
+      const searchParameter = {
+        ...controllerPaginationHelper(req),
+        ...commonFilters(req),
+        ...appointmentFilters(req),
+      };
+
+      response = await AppointmentService.getAllMyAppointments(searchParameter, req.user);
     } catch (err) {
       return next(err);
     }

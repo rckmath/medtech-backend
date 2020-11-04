@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import validator from 'validator';
 import GenderType from '../../enums/gender-type';
 import UserType from '../../enums/user-type';
 import StateCode from '../../enums/state-uf-list';

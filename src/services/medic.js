@@ -150,6 +150,9 @@ export default class MedicService {
         as: 'user',
         where: userWhere,
         required: true,
+        attributes: {
+          exclude: ['password', 'recoveryToken', 'recoveryTokenExpiresAt'],
+        },
       },
     });
 
