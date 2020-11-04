@@ -25,6 +25,7 @@ const AppointmentCodeError = {
 const AuthCodeError = {
   BAD_CREDENTIALS: 'bad_credentials',
   ACCESS_NOT_ALLOWED: 'access_not_allowed',
+  AUTHENTICATION_FAILED: 'authentication_failed',
 };
 
 export {

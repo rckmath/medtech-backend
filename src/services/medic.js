@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 import ModelRepository from '../db/repository';
 import db from '../db/database';
 import ExtendableError from '../utils/error/extendable';
-import { UserCodeError, MedicCodeError } from '../utils/error/business-errors';
+import { UserCodeError, MedicCodeError, AuthCodeError } from '../utils/error/business-errors';
 import ErrorType from '../enums/error-type';
 import { serviceOrderHelper, sha256 } from '../utils/tools';
 import UserType from '../enums/user-type';
@@ -159,7 +159,7 @@ export default class MedicService {
   static async updateById(id, medic, actor) {
     if (actor.userType === UserType.MEDIC) {
       if (medic.regNum || medic.regUf) {
-        throw new ExtendableError(ErrorType.FORBIDDEN, 'Permission denied.', httpStatus.FORBIDDEN);
+        throw new ExtendableError(ErrorType.FORBIDDEN, AuthCodeError.ACCESS_NOT_ALLOWED, httpStatus.FORBIDDEN);
       }
     }
 
