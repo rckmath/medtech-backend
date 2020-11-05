@@ -34,7 +34,11 @@ export default class AppointmentService {
     return response;
   }
 
-  static async getAllMyAppointments(actor) {
+  static async getAllMyAppointments(searchParameter, actor) {
+    const commonQuery = SearchParameter.createCommonQuery(searchParameter);
+    const appointmentQuery = SearchParameter.createAppointmentQuery(searchParameter);
+    const where = { ...commonQuery.where, ...appointmentQuery.where };
+
     const include = [{
       model: MedicModel,
       as: 'medic',
@@ -60,9 +64,12 @@ export default class AppointmentService {
       include[1].where.id = actor.id;
     }
 
-    const appointments = await ModelRepository.selectAll(AppointmentModel, {
-      where: { deletedAt: null },
+    const appointments = await ModelRepository.selectWithPagination(AppointmentModel, {
+      where,
       include,
+      offset: searchParameter.offset,
+      limit: searchParameter.limit,
+      order: [serviceOrderHelper(searchParameter)],
     });
 
     return appointments;
